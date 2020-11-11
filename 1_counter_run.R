@@ -19,7 +19,7 @@ t_start = 60
 # transmission
 R0 <- c(2.5, 3.0)
 # NPIs 2020 and 2021
-Rt1 <- c(0.6, 0.8, 1)
+Rt1 <- c(0.6, 0.8, 1, 1.1)
 Rt2 <- c(1.3, 1.5, 2)
 timing1 <- 120 - t_start
 timing2 <- 365 + 30 - t_start

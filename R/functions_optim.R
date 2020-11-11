@@ -15,7 +15,7 @@ strategy_cov1_fn <- function(st_df, d){
 create_params_list <-
   function(t_start = 60,
            R0 = 2.5,
-           Rt1 = 1,
+           Rt1 = 1.1,
            Rt2 = 2,
            coverage = c(0, 0.8),
            income_group = c("HIC", "UMIC", "LMIC", "LIC"),
@@ -23,7 +23,7 @@ create_params_list <-
            mode = "Infection",
            hs_constraints = "Present",
            efficacy = 0.7,
-           duration_R = Inf,
+           duration_R = 365,
            duration_V = 5000,
            seeding_cases = 60) {
     vaccine_start <- 366 - t_start

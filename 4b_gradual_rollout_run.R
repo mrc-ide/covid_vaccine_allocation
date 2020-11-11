@@ -15,10 +15,10 @@ source("R/functions.R")
 # start time for transmission
 t_start = 60
 # transmission
-R0 <- c(2.5, 3.0)
+R0 <- 2.5
 # NPIs 2020 and 2021
-Rt1 <- c(0.8, 1.1)
-Rt2 <- c(1.3, 1.5, 2)
+Rt1 <- 1.1
+Rt2 <- c(1.1, 1.3, 1.5, 2)
 timing1 <- 120 - t_start
 timing2 <- 365 + 30 - t_start
 # Vaccine coverage
@@ -26,18 +26,21 @@ coverage <- c(0,0.8)
 # Mode of action
 mode <- c("Infection")
 # Health system constraints
-hs_constraints <- c("Present", "Absent")
+hs_constraints <- "Present"
 # Efficacy 
 efficacy <- 0.7
 # Vaccine target age
-age_target <- "1_1_1_1_1_1_1_1_1_1_1_1_1_1_1_1_1"
+age_target <- NA
+vaccine_coverage_mat <- c("All", "Elderly", "Working Elderly Children")
 # Income group
 income_group <- c("HIC")
 # Durations of immunity
-duration_R <- c(183, 365, Inf)
-duration_V <- 5000#c(183, 365, 5000)
+duration_R <- 365
+duration_V <- 5000
 # Vaccine start time
 vaccine_start <- 365 - t_start
+# Vaccine rollout period
+vaccine_period <- c(30, 365)
 # Seeding cases
 seeding_cases <- 60
 # immunosenescence
@@ -52,6 +55,7 @@ scenarios <- expand_grid(t_start = t_start,
                          efficacy = efficacy,
                          hs_constraints = hs_constraints,
                          age_target = age_target,
+                         vaccine_coverage_mat = vaccine_coverage_mat,
                          income_group = income_group,
                          duration_R = duration_R,
                          duration_V = duration_V,
@@ -59,22 +63,22 @@ scenarios <- expand_grid(t_start = t_start,
                          timing1 = timing1,
                          timing2 = timing2,
                          immunosenescence = immunosenescence,
-                         seeding_cases = seeding_cases)
+                         seeding_cases = seeding_cases,
+                         vaccine_period = vaccine_period)
 
 scenarios <- scenarios %>%
   mutate(reduction1 = 1-Rt1/R0,
          reduction2 = 1-Rt2/R0) %>%
-  select(t_start, R0, reduction1, reduction2, coverage, mode, efficacy, hs_constraints, age_target, income_group, duration_R, duration_V, vaccine_start, timing1, timing2, immunosenescence, seeding_cases)
-
+  select(-Rt1, -Rt2)
 nrow(scenarios)
 
 #### Run the model #############################################################
-plan(multiprocess, workers = 6)
+plan(multiprocess, workers = 2)
 system.time({out <- future_pmap(scenarios, run_scenario, .progress = TRUE)})
 
 #### Format output #############################################################
 out_format <- format_out(out, scenarios)
 
 ### Save output ################################################################
-saveRDS(out, "output/4_epidemic_characteristics_raw.rds")
-saveRDS(out_format, "output/4_epidemic_characteristics.rds")
+saveRDS(out, "output/4_gradual_rollout_raw.rds")
+saveRDS(out_format, "output/4_gradual_rollout.rds")

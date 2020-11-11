@@ -17,7 +17,7 @@ t_start = 60
 # transmission
 R0 <- 2.5
 # NPIs 2020 and 2021
-Rt1 <- 1
+Rt1 <- 1.1
 Rt2 <- 2
 reduction1 <- 1-Rt1/R0
 reduction2 <- 1-Rt2/R0

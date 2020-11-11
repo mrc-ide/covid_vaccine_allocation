@@ -13,12 +13,11 @@ library(gtools)
 ### Load function ##############################################################
 source("R/functions_optim.R")
 
-### Read dataframe from 9b #####################################################
-d_main <- read_csv("optim_dataframes/optim_dataframe_income_omc.csv")
+### Read dataframe from 6b #####################################################
+d_main <- read_csv("optim_dataframes/optim_dataframe_income_omc_cov1.csv")
 ### Read strategies ############################################################
-strategies <- read_csv("data/non_optim_scenarios_cov1.csv", col_types = "ccccd")
-# Select coverage
-cov <- 0.8
+strategies <- read_csv("data/non_optim_scenarios_cov1.csv", col_types = "ccccdddd") %>% filter(!(coverage_children == 0 & coverage_middle == 0 & coverage_old == 0))
+
 # Select immunosenescence
 imm <- 1
 # Select mode
@@ -26,17 +25,17 @@ m <- "Infection"
 # hs constraints
 hs_con <- "Present"
 # immunity
-d_R <- Inf
+d_R <- 365
 d_V <- 5000
 
 # Filter to required scenario combination
 d <- d_main %>%
-  filter(coverage == cov,
-         immunosenescence == imm,
+  filter(immunosenescence == imm,
          mode == m,
          hs_constraints == hs_con,
          duration_V == d_V,
-         duration_R == d_R)
+         duration_R == d_R) %>%
+filter(!(coverage_children == 0 & coverage_middle == 0 & coverage_old == 0))
 
 # 1. All countries receive doses in proportion to population - 2 dose schedule
 strategy1 <- filter(strategies, strategy == "strategy1_cov1")

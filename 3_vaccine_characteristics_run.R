@@ -15,7 +15,7 @@ t_start = 60
 # transmission
 R0 <- 2.5
 # NPIs 2020 and 2021
-Rt1 <- 1
+Rt1 <- 1.1
 Rt2 <- 2
 reduction1 <- 1-Rt1/R0
 reduction2 <- 1-Rt2/R0
@@ -34,7 +34,7 @@ hs_constraints <- c("Present", "Absent")
 # Efficacy 
 efficacy = seq(0.5, 1, 0.1)
 # Durations of immunity
-duration_R <- Inf
+duration_R <- 365
 duration_V <- 5000
 # Vaccine start time
 vaccine_start <- 366 - t_start

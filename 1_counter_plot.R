@@ -8,8 +8,8 @@ library(purrr)
 library(tidyr)
 
 # Plotting stuff
-Rt1_labs <- c('R[t1]=0.6', 'R[t1]=0.8', 'R[t1]=1')
-names(Rt1_labs) <- c(0.6, 0.8, 1)
+Rt1_labs <- c('R[t1]=0.8', 'R[t1]=1', 'R[t1]=1.1')
+names(Rt1_labs) <- c(0.8, 1, 1.1)
 
 R0_labs <- c('R[0]=2.5', 'R[0]=3.0')
 names(R0_labs) <- c(2.5, 3.0)
@@ -25,7 +25,8 @@ counter_out <- readRDS("output/1_counter.rds") %>%
 
 pd <- counter_out %>%
   filter(vaccine_start == 365,
-         coverage == 0) %>%
+         coverage == 0,
+         Rt1 > 0.6) %>%
   select(R0, Rt1, Rt2, income_group, duration_R, output_cf, prop_R, timing1, timing2) %>%
   unnest(cols = output_cf) %>%
   filter(compartment == "deaths",
@@ -41,7 +42,7 @@ pd <- counter_out %>%
 # Plot trajectories assuming Inf immunity, HIC income setting
 
 pd1 <- pd %>% 
-  filter((duration_R == Inf),
+  filter((duration_R == 365),
          income_group == "HIC") %>%
   mutate(R0_labs = paste0("R[0]==", R0),
          Rt1_labs = paste0("R[t1]==", Rt1))
@@ -80,7 +81,7 @@ names(duration_R_labs) <- c(365, Inf)
 
 pd3 <- pd %>% 
   filter(R0 == 2.5,
-         Rt1 == 1,
+         Rt1 == 1.1,
          income_group == "HIC") %>%
   mutate(duration_R = factor(duration_R, levels = c(365, Inf)))
 
@@ -124,7 +125,7 @@ names(duration_R_labs) <- c(365, Inf)
 
 pd4 <- pd %>% 
   filter(R0 == 2.5,
-         Rt1 == 1,
+         Rt1 == 1.1,
          income_group != "HIC") %>%
   mutate(duration_R = factor(duration_R, levels = c(365, Inf)))
 

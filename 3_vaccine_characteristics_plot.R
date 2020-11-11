@@ -21,8 +21,7 @@ d <- readRDS("output/3_vacc_characteristics.rds") %>%
          Rt1 = (1-reduction1)*R0,
          Rt2 = (1-reduction2)*R0)
 
-
-# Theoretical herd immunity threshold for imperfect vaccine
+# Theoretical herd immunity threshold for imperfect vaccine ####################
 # From  “Herd Immunity”: A Rough Guide (Paul Fine, Ken Eames, David L. Heymann)
 R <- c(2.5, 2)
 efficacy <- seq(0.5, 1, 0.001)
@@ -50,7 +49,7 @@ p1 <- ggplot(pd1, aes(x = efficacy * 100, y = threshold * 100, col = label)) +
 # Coverage and efficacy
 pd2 <- d %>%
   filter(income_group == "HIC",
-         duration_R == Inf,
+         duration_R == 365,
          hs_constraints == "Present")
 
 p2 <- ggplot(pd2, aes(x = coverage * 100, y = deaths_averted_2021 / 50e6 * 1e3, col = efficacy, lty = mode)) + 
@@ -78,12 +77,12 @@ ggsave("plots/Fig2.png", cov_efficacy_plot, height = 6, width = 10)
 # Repeat the coverage/efficacy/mode plot for all income settings
 
 # Coverage and efficacy
-pd5 <- d %>%
-  filter(duration_R == Inf)
-pd5[which(pd5$hs_constraints == "Absent"),]$hs_constraints <- "HS Constraints: Absent"
-pd5[which(pd5$hs_constraints == "Present"),]$hs_constraints <- "HS Constraints: Present"
+pd3 <- d %>%
+  filter(duration_R == 365)
+pd3[which(pd3$hs_constraints == "Absent"),]$hs_constraints <- "HS Constraints: Absent"
+pd3[which(pd3$hs_constraints == "Present"),]$hs_constraints <- "HS Constraints: Present"
 
-p5 <- ggplot(pd5, aes(x = coverage * 100, y = deaths_averted_2021 / 50e6 * 1e3, col = efficacy, lty = mode)) + 
+p3 <- ggplot(pd3, aes(x = coverage * 100, y = deaths_averted_2021 / 50e6 * 1e3, col = efficacy, lty = mode)) + 
   geom_line() +
   scale_colour_viridis_d("Efficacy (%)", end = 0.8, direction = -1) +
   scale_linetype("Mode") +
@@ -95,6 +94,6 @@ p5 <- ggplot(pd5, aes(x = coverage * 100, y = deaths_averted_2021 / 50e6 * 1e3, 
         panel.border = element_blank(),
         axis.line = element_line())
 
-ggsave("plots/coverage_efficacy_mode_income_constraints_SI.png", p5, height = 6, width = 10)
+ggsave("plots/coverage_efficacy_mode_income_constraints_SI.png", p3, height = 6, width = 10)
 
 

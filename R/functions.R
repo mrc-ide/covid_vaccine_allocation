@@ -86,7 +86,9 @@ run_scenario <- function(R0 = 3,
                          timing1 = 120 - 60,
                          timing2 = 365 - 60,
                          coverage = 0,
+                         varying_coverage = 0,
                          age_target = "1_1_1_1_1_1_1_1_1_1_1_1_1_1_1_1_1",
+                         vaccine_coverage_mat = NA,
                          mode = "Infection",
                          efficacy = 0.7,
                          vaccine_period = 30,
@@ -97,7 +99,10 @@ run_scenario <- function(R0 = 3,
                          duration_V = 5000,
                          seeding_cases = 60,
                          t_start = 60,
-                         reduce_inf = 1
+                         reduce_inf = 1,
+                         coverage_children = 0,
+                         coverage_middle = 0,
+                         coverage_old = 0
 ){
   # R0
   R0 <- setR0(R0 = R0, reduction1 = reduction1, reduction2 = reduction2)
@@ -120,13 +125,21 @@ run_scenario <- function(R0 = 3,
   # reduce infectiousness in children under 10 years old
   rel_inf <- reduce_inf_vector(reduce_inf)
   
-  # get vaccine age-targeting strategy
-  m1 <- (as.matrix(t(as.numeric(unlist(strsplit(age_target, "_"))))))
-  if (coverage != 0){
-    m1 <- m1 * coverage
+  # if varying coverage by age group, get values
+  if (varying_coverage == 1){
+    coverage <- c(rep(coverage_children, 3), rep(coverage_middle, 10), rep(coverage_old, 4))
   }
   
-  max_vaccine = c(0, coverage * target_pop / vaccine_period)
+  # get vaccine age-targeting strategy
+  if (is.na(age_target) == 0){
+    m1 <- (as.matrix(t(as.numeric(unlist(strsplit(age_target, "_")))))) * coverage
+  } else if (is.na(age_target) == 1 & varying_coverage == 0){
+    m1 <- strategy_matrix(vaccine_coverage_mat, max_coverage = coverage)
+  } else {
+    stop("If fixed strategy matrix specified, coverage cannot be a vector of values and should represent the maximum coverage.")
+  }
+  
+  max_vaccine = c(0, max(coverage) * target_pop / vaccine_period)
   tt_vaccine = c(0, vaccine_start)
 
   # Run
@@ -178,12 +191,20 @@ format_out <- function(out, scenarios, target_pop = 50e6){
   # Combine_inputs and outputs
   out1 <- bind_cols(scenarios, bind_rows(out))
   # Isolate counterfactual (Coverage == 0)
-  outcf <- filter(out1, coverage == 0) %>%
-    select(-coverage) %>%
+  if ("coverage" %in% colnames(out1)) {
+    outcf <- filter(out1, coverage == 0) %>%
+      select(-coverage) %>%
+      rename(output_cf = output,
+             output_age_cf = output_age) %>%
+      unique()
+  } else {
+    outcf <- filter(out1, (coverage_children == 0 & coverage_middle == 0 & coverage_old == 0)) %>%
+    select(-coverage_children, -coverage_middle, -coverage_old) %>%
     rename(output_cf = output,
            output_age_cf = output_age) %>%
     unique()
-  
+  }
+
   # Combine runs and counterfactual and estimate summaries
   summaries <- left_join(out1, outcf)
   
@@ -208,8 +229,7 @@ format_out <- function(out, scenarios, target_pop = 50e6){
 summarise_by_age <- function(x, t_start, t_end, period){
   filter(x, t >= t_start, t < t_end) %>%
     group_by(age_group, compartment) %>%
-    summarise(value = sum(value, na.rm = TRUE), .groups = NULL) %>%
-    ungroup() %>%
+    summarise(value = sum(value, na.rm = TRUE), .groups = "drop_last") %>%
     mutate(period = factor(period))
 } 
 
@@ -276,6 +296,7 @@ run_scenario_cluster <- function(run_number = 1,
                                  timing1 = 60,
                                  timing2 = 305,
                                  coverage = 0,
+                                 varying_coverage = 0,
                                  age_target = "1_1_1_1_1_1_1_1_1_1_1_1_1_1_1_1_1",
                                  mode = "Infection",
                                  efficacy = 0.7,
@@ -298,6 +319,7 @@ run_scenario_cluster <- function(run_number = 1,
                       timing1 = timing1,
                       timing2 = timing2,
                       coverage = coverage,
+                      varying_coverage = varying_coverage,
                       age_target = age_target,
                       mode = mode, 
                       efficacy = efficacy,

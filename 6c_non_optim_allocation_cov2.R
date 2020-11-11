@@ -9,16 +9,8 @@ library(readr)
 
 ### Load outputs ###############################################################
 d <- readRDS("output/6_non_optim_cov2.rds") %>%
-  select(strategy, t_start, R0, reduction1, reduction2, coverage, age_target, income_group, immunosenescence, mode, hs_constraints, efficacy, duration_R, duration_V, vaccine_start, seeding_cases, timing1, timing2, deaths_averted_2021, vaccine_n_2021) %>%
-  filter(coverage > 0) %>%
-  mutate(target_group = "")
-
-d[which(d$age_target == "0_0_0_0_0_0_0_0_0_0_0_0_0_1_1_1_1"),]$target_group <- "old"
-d[which(d$age_target == "0_0_0_1_1_1_1_1_1_1_1_1_1_0_0_0_0"),]$target_group <- "middle"
-d[which(d$age_target == "1_1_1_0_0_0_0_0_0_0_0_0_0_0_0_0_0"),]$target_group <- "children"
-d[which(d$age_target == "0_0_0_1_1_1_1_1_1_1_1_1_1_1_1_1_1"),]$target_group <- "old_middle"
-d[which(d$age_target == "1_1_1_1_1_1_1_1_1_1_1_1_1_0_0_0_0"),]$target_group <- "middle_children"
-d[which(d$age_target == "1_1_1_1_1_1_1_1_1_1_1_1_1_1_1_1_1"),]$target_group <- "all"
+  select(sensitivity_run, strategy, income_group, target_group, age_target, coverage_children, coverage_middle, coverage_old, t_start, R0, efficacy, reduction2, reduction1, mode, immunosenescence, hs_constraints, reduce_inf, timing1, timing2, duration_R, duration_V, vaccine_start, seeding_cases, deaths_averted_2021, vaccine_n_2021) %>%
+  filter(!(coverage_children == 0 & coverage_middle == 0 & coverage_old == 0))
 
 ################################################################################
 
@@ -35,7 +27,7 @@ d_main_income_region <- left_join(d, pop_dat, by = c("income_group", "target_gro
          vaccine_n_2021 = vaccine_n_2021 / 50e6 * pop_2019,
          dapd_2021 = deaths_averted_2021 / vaccine_n_2021,
   ) %>%
-  group_by(strategy, immunosenescence, mode, hs_constraints, efficacy) %>%
+  group_by(sensitivity_run, strategy, immunosenescence, mode, hs_constraints, efficacy, reduction2, reduction1, reduce_inf, timing1, timing2, duration_R, duration_V, vaccine_start, seeding_cases, t_start, R0) %>%
   mutate(total_vaccine_n = sum(vaccine_n_2021),
          total_deaths_averted = sum(deaths_averted_2021))
 
