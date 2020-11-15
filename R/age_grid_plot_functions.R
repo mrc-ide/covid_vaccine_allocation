@@ -3,7 +3,7 @@ plot1 <- function(dat, caption, ylabs){
   ggplot(dat) +
     geom_rect(aes(xmin = xmin, xmax = xmax, ymin = name2, ymax = name2 + 1, fill = value)) +
     labs(x = "Supply (%)", y = "Age group", fill = "", title = caption) +
-    scale_fill_manual(values = c("white", "darkgrey"), labels = c("No vaccine", "Vaccine")) +
+    scale_fill_manual(values = c("white", "#440154ff"), labels = c("No vaccine", "Vaccine")) +
     scale_y_continuous(breaks = c(1:17), labels = ylabs) +
     theme_bw() +
     theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),

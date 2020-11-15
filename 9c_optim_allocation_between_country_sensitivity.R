@@ -11,37 +11,18 @@ source("R/functions_optim.R")
 #######################################################################
 # User-defined inputs
 
-sensitivity_run <- "hs_constraints_absent" #"lower_Rt2" #"mode_disease" #"reduce_efficacy" #"immunosenescence" #"hs_constraints_absent"
-eff <- 0.7
-imm <- 1
-m <- "Infection"
-Rt2_val <- 2
-hs_con <- "Absent"
+sr_list <- c("reduce_efficacy", "immunosenescence", "mode_disease", "lower_Rt2", "hs_constraints_absent", "reduce_inf")
 
-cov <- 0.8
-d_R <- Inf
-d_V <- 5000
+for (sr in sr_list){
 
 # set vaccine dose constraint
 budget = 2e9 * 0.85 / 2
 
 #######################################################################
 # read in dataframe
-d_main <- read_csv("optim_dataframes/optim_dataframe_income_fine_sensitivity.csv") %>%
-  mutate(Rt2 = (1-reduction2)*R0)
+d_main <- read_csv(paste0("optim_dataframes/optim_dataframe_income_fine_sensitivity_", sr, ".csv"))
 
 #######################################################################
-
-# Load raw data and filter to required scenario combination
-d_sub <- d_main %>%
-  filter(coverage == cov,
-         efficacy == eff,
-         immunosenescence == imm,
-         mode == m,
-         Rt2 == Rt2_val,
-         hs_constraints == hs_con,
-         duration_V == d_V,
-         duration_R == d_R)
 
 # Generate all possibilities for each income group partitioned into country sizes
 partition_size <- read_csv("data/country_pop_income.csv") %>%
@@ -59,7 +40,7 @@ p <- expand_grid(income_group, age_target) %>%
   mutate(income_group_p = paste0(income_group, "_", country_code))
 
 # Join with results of simulations and calculate the deaths averted and doses for each partition size
-d <- left_join(p, d_sub) %>%
+d <- left_join(p, d_main) %>%
   group_by(income_group, age_target, coverage) %>%
   mutate(income_group_size = sum(partition_size)) %>%
   ungroup() %>%
@@ -81,5 +62,5 @@ optimal <- run_optim(input, budget)
 
 #######################################################################
 # Save results
-write_csv(optimal, paste0("between_country_optim_outputs/optimal_", sensitivity_run, ".csv"))
-
+write_csv(optimal, paste0("between_country_optim_outputs/optimal_", sr, ".csv"))
+}

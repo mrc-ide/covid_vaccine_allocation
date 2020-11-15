@@ -12,10 +12,13 @@ library(readr)
 source("R/functions.R")
 source("R/functions_optim.R")
 
+### Specify parameter set #######################################################
+sr <- "reduce_inf"
+
 ### Specify runs ###############################################################
 
 # Scenario table
-scenarios1 <- create_params_list(efficacy = 0.5) %>%
+scenarios1 <- create_params_list(efficacy = 0.7) %>%
   mutate(sensitivity_run = "reduce_efficacy")
 scenarios2 <- create_params_list(immunosenescence = 0.5) %>%
   mutate(sensitivity_run = "immunosenescence")
@@ -41,19 +44,28 @@ nrow(scenarios)
 write_csv(scenarios, "cluster_outputs_sensitivity/scenarios.csv")
  
 ################################################################################
-sources <- c("R/functions.R", "R/functions_cluster_sensitivity.R")
-ctx <- context::context_save(path = "context",
-                             sources = sources,
-                             packages = c("dde", "odin", "odin.js", "squire", "nimue", "dplyr", "purrr"),
-                             package_sources = provisionr::package_sources(local = c("packages/dde_1.0.2.zip",
-                                                                                     "packages/odin_1.0.6.zip",
-                                                                                     "packages/odin.js_0.1.8.zip",
-                                                                                     "packages/squire_0.4.34.zip",
-                                                                                     "packages/nimue_0.1.7.zip")))
+# sources <- c("R/functions.R", "R/functions_cluster_sensitivity.R")
+# ctx <- context::context_save(path = "context",
+#                              sources = sources,
+#                              packages = c("dde", "odin", "odin.js", "squire", "nimue", "dplyr", "purrr"),
+#                              package_sources = provisionr::package_sources(local = c("packages/dde_1.0.2.zip",
+#                                                                                      "packages/odin_1.0.6.zip",
+#                                                                                      "packages/odin.js_0.1.8.zip",
+#                                                                                      "packages/squire_0.4.34.zip",
+#                                                                                      "packages/nimue_0.1.7.zip")))
+# 
+# config <- didehpc::didehpc_config(use_workers=FALSE, cluster="fi--didemrchnb")
+# run <- didehpc::queue_didehpc(ctx, config = config)
+# 
+# run$cluster_load(nodes = FALSE)
+# 
+# t1 <- run$enqueue_bulk(select(scenarios1, -sensitivity_run), run_scenario_cluster, do_call=TRUE, name='run_scenario', overwrite=TRUE)
 
-config <- didehpc::didehpc_config(use_workers=FALSE, cluster="fi--didemrchnb")
-run <- didehpc::queue_didehpc(ctx, config = config)
+#### Run the model - not on the cluster #########################################
 
-run$cluster_load(nodes = FALSE)
+scenarios_sub <- filter(scenarios, sensitivity_run == sr)
+plan(multiprocess, workers = 6)
 
-t1 <- run$enqueue_bulk(select(scenarios1, -sensitivity_run), run_scenario_cluster, do_call=TRUE, name='run_scenario', overwrite=TRUE)
+system.time({out <- future_pmap(select(scenarios_sub, -directory_out, -sensitivity_run), run_scenario_basic, .progress = TRUE)})
+
+write_csv(bind_rows(out), paste0("cluster_outputs_sensitivity/AGGREGATOR_", sr, ".csv"))

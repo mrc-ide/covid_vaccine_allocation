@@ -13,14 +13,15 @@ source("R/functions.R")
 
 ### Specify runs ###############################################################
 # start time for transmission
-t_start = 60
+t_start <- 60
+vaccine_period <- 30
 # transmission
 R0 <- c(2.5, 3.0)
 # NPIs 2020 and 2021
-Rt1 <- c(0.8, 1.1)
+Rt1 <- c(0.9, 1.1)
 Rt2 <- c(1.3, 1.5, 2)
 timing1 <- 120 - t_start
-timing2 <- 365 + 30 - t_start
+timing2 <- 366 - t_start + vaccine_period + 21
 # Vaccine coverage
 coverage <- c(0,0.8) 
 # Mode of action
@@ -28,16 +29,17 @@ mode <- c("Infection")
 # Health system constraints
 hs_constraints <- c("Present", "Absent")
 # Efficacy 
-efficacy <- 0.7
+efficacy <- 0.9
 # Vaccine target age
 age_target <- "1_1_1_1_1_1_1_1_1_1_1_1_1_1_1_1_1"
 # Income group
 income_group <- c("HIC")
 # Durations of immunity
 duration_R <- c(183, 365, Inf)
-duration_V <- 5000#c(183, 365, 5000)
+duration_V <- 5000
+dur_vacc_delay <- 7
 # Vaccine start time
-vaccine_start <- 365 - t_start
+vaccine_start <- 366 - t_start + 21
 # Seeding cases
 seeding_cases <- 60
 # immunosenescence
@@ -55,7 +57,9 @@ scenarios <- expand_grid(t_start = t_start,
                          income_group = income_group,
                          duration_R = duration_R,
                          duration_V = duration_V,
+                         dur_vacc_delay = dur_vacc_delay,
                          vaccine_start = vaccine_start,
+                         vaccine_period = vaccine_period,
                          timing1 = timing1,
                          timing2 = timing2,
                          immunosenescence = immunosenescence,
@@ -64,7 +68,7 @@ scenarios <- expand_grid(t_start = t_start,
 scenarios <- scenarios %>%
   mutate(reduction1 = 1-Rt1/R0,
          reduction2 = 1-Rt2/R0) %>%
-  select(t_start, R0, reduction1, reduction2, coverage, mode, efficacy, hs_constraints, age_target, income_group, duration_R, duration_V, vaccine_start, timing1, timing2, immunosenescence, seeding_cases)
+  select(t_start, R0, reduction1, reduction2, coverage, mode, efficacy, hs_constraints, age_target, income_group, duration_R, duration_V, dur_vacc_delay, vaccine_period, vaccine_start, timing1, timing2, immunosenescence, seeding_cases)
 
 nrow(scenarios)
 

@@ -11,10 +11,11 @@ library(stringr)
 raw <- read_csv("cluster_outputs_default/AGGREGATOR.csv")
 scenarios <- read_csv("cluster_outputs_default/scenarios.csv")
 d <- left_join(raw, scenarios) %>%
-  select(-run_number, -directory_out)
+  select(-run_number, -directory_out, -vaccine_n)
 
 d_cf <- filter(d, age_target == "0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0") %>%
-  select(-coverage, -age_target, -vaccine_n) %>%
+  #select(-coverage, -age_target, -vaccine_n) %>%
+  select(-coverage, -age_target) %>%
   rename("deaths_cf" = "deaths",
          "life_years_lost_cf" = "life_years_lost")
 

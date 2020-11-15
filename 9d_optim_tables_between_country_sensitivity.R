@@ -3,10 +3,12 @@ library(tidyr)
 library(dplyr)
 library(stringr)
 
-sensitivity_run <-  "hs_constraints_absent"#lower_Rt2"#"hs_constraints_absent" #"mode_disease" 
-#"immunosenescence"reduce_efficacy"
 
-d <- read_csv(paste0("between_country_optim_outputs/optimal_", sensitivity_run, ".csv"))
+sr_list <- c("reduce_efficacy", "immunosenescence", "mode_disease", "lower_Rt2", "hs_constraints_absent", "reduce_inf")
+
+for (sr in sr_list){
+
+d <- read_csv(paste0("between_country_optim_outputs/optimal_", sr, ".csv"))
 pop_dat <- read_csv("data/income_region_pop_proportions_fine.csv")
 
 ##################################################################
@@ -59,5 +61,6 @@ d_summary_icg <- d_summary %>%
 ##################################################################
 # Save tables
 ##################################################################
-write_csv(d_summary, paste0("tables/optimal_strategy_between_country_", sensitivity_run, ".csv"))
-write_csv(d_summary_icg, paste0("tables/optimal_strategy_between_country_icg_", sensitivity_run, ".csv"))
+write_csv(d_summary, paste0("tables/optimal_strategy_between_country_", sr, ".csv"))
+write_csv(d_summary_icg, paste0("tables/optimal_strategy_between_country_icg_", sr, ".csv"))
+}

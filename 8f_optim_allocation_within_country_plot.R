@@ -47,6 +47,4 @@ g8 <- plot2(filter(df1, income_group == "LIC"))
 
 all_plots <- (g1 | g2 | g3 | g4 | g5 | g6 | g7 | g8) + plot_layout(guide = "collect", ncol = 2, nrow = 4, heights = c(1, 1, 1, 1))+ plot_annotation(tag_levels = 'A')
 
-all_plots
-
 ggsave("plots/Fig4.png", all_plots, height = 11, width = 10)

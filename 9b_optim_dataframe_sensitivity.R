@@ -8,15 +8,20 @@ library(readr)
 library(stringr)
 ################################################################################
 
+sr_list <- c("reduce_efficacy", "immunosenescence", "mode_disease", "lower_Rt2", "hs_constraints_absent", "reduce_inf")
+
+for (sr in sr_list){
+
 ### Load outputs ###############################################################
-raw <- read_csv("cluster_outputs_sensitivity/AGGREGATOR.csv")
-scenarios <- read_csv("cluster_outputs_sensitivity/scenarios.csv")
+raw <- read_csv(paste0("cluster_outputs_sensitivity/AGGREGATOR_", sr, ".csv"))
+scenarios <- read_csv("cluster_outputs_sensitivity/scenarios.csv") %>%
+  filter(sensitivity_run == sr)
 d <- left_join(raw, scenarios) %>%
-  rename("deaths" = "d") %>%
-  select(-run_number)
+  #rename("deaths" = "d") %>%
+  select(-run_number, -life_years_lost)
 
 d_cf <- filter(d, age_target == "0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0") %>%
-  select(-coverage, -age_target) %>%
+  select(-coverage, -age_target, -vaccine_n) %>%
   rename("deaths_cf" = "deaths")
 
 # join with cf scenario and calculate deaths averted
@@ -50,4 +55,6 @@ d_main_income_region <- y %>%
          dapd_2021 = deaths_averted_2021 / vaccine_n_2021,
   )
 
-write_csv(d_main_income_region, "optim_dataframes/optim_dataframe_income_fine_sensitivity.csv")
+write_csv(d_main_income_region, paste0("optim_dataframes/optim_dataframe_income_fine_sensitivity_", sr, ".csv"))
+
+}
