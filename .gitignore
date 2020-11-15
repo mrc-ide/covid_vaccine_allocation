@@ -6,4 +6,6 @@ packages/
 cluster*
 output/
 context/
-
+tables_old_params/
+outputs_old_params/
+plots_old_params/

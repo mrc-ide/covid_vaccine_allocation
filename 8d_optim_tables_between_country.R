@@ -58,3 +58,4 @@ d_summary_icg <- d_summary %>%
 #write_csv(d_summary, "tables/optimal_strategy_between_country.csv")
 write_csv(d_summary_icg, "tables/optimal_strategy_between_country_icg.csv")
 write_csv(select(d_summary_icg, income_group, deaths_averted_per_m, dap100fvp, total_deaths_averted_per_m, dap100fvp_total), "tables/table_2_optimal.csv")
+

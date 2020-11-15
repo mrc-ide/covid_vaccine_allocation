@@ -25,7 +25,7 @@ m <- "Infection"
 # hs constraints
 hs_con <- "Present"
 # immunity
-d_R <- Inf
+d_R <- 365
 d_V <- 5000
 
 #######################################################################

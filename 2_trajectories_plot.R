@@ -7,6 +7,7 @@ source("R/functions.R")
 
 ################################################################################
 # Plotting stuff
+
 vaccine_start_labs <- c("Jan '21", "Feb '21", "Mar '21", "Apr '21", "May '21", "Jun '21", "Jul '21", "Aug '21", "Sep '21", "Oct '21", "Nov '21", "Dec '21")
 names(vaccine_start_labs) <- round(seq(366,(365*2),30.5))
 
@@ -25,12 +26,11 @@ labels1 <- c("Jul '20", "Jan '21", "Jul '21", "Jan '22", "Jul '22")
 ################################################################################
 # Load outputs
 timing_out <- readRDS("output/2_trajectories.rds") %>%
-  mutate(vaccine_start = vaccine_start + t_start,
+  mutate(vaccine_start = vaccine_start + t_start - 21,
          Rt1 = (1-reduction1)*R0,
          Rt2 = (1-reduction2)*R0) %>%
   filter(R0 == 2.5,
          coverage == 0.8,
-         vaccine_start <= 518,
          Rt2 == 2, 
          income_group == "HIC") %>%
   select(R0, vaccine_start, coverage, Rt1, Rt2, duration_R, duration_V, output, output_cf) %>%
@@ -73,7 +73,7 @@ pd2 <- pd_join %>%
 
 p2 <- ggplot() + 
   geom_segment(data = pd2, aes(x = vaccine_start, y = 0, xend = vaccine_start, yend = Inf, col = "Vaccination start")) +
-  geom_segment(data = pd2, aes(x = vaccine_start + 30, y = 0,  xend = vaccine_start + 30, yend = Inf, col = "Vaccination stop")) +
+  geom_segment(data = pd2, aes(x = vaccine_start + 30 + 21, y = 0,  xend = vaccine_start + 30 + 21, yend = Inf, col = "Vaccination stop")) +
   geom_line(data = pd2, aes(x = t, y = (value/50e6*1e6), linetype = intervention)) +
   geom_line(data = filter(pd2, t < 366), aes(x = t, y = (value/50e6*1e6)), col = "black", linetype = "dashed") +
   ylab("Deaths per million per day") + 
@@ -88,6 +88,8 @@ p2 <- ggplot() +
         axis.line = element_line()) +
   scale_y_continuous(limits = c(0,100))
 
-ggsave("plots/trajectories_vaccine_immunity_SI.png", p2, height = 4, width = 11)
+p2
+
+ggsave("plots/FigS7.png", p2, height = 4, width = 11)
 
 

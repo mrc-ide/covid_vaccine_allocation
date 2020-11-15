@@ -14,42 +14,50 @@ strategy_cov1_fn <- function(st_df, d){
 # create parameter list
 create_params_list <-
   function(t_start = 60,
+           vaccine_period = 30,
            R0 = 2.5,
            Rt1 = 1.1,
            Rt2 = 2,
-           coverage = c(0, 0.8),
+           coverage = 0.8,
            income_group = c("HIC", "UMIC", "LMIC", "LIC"),
            immunosenescence = 1,
            mode = "Infection",
            hs_constraints = "Present",
-           efficacy = 0.7,
+           efficacy = 0.9,
            duration_R = 365,
            duration_V = 5000,
-           seeding_cases = 60) {
-    vaccine_start <- 366 - t_start
+           dur_vacc_delay = 7,
+           seeding_cases = 60,
+           reduce_inf = 1) {
+    
+    vaccine_start <- 366 - t_start + 21
     reduction1 <- 1 - Rt1 / R0
     reduction2 <- 1 - Rt2 / R0
     timing1 <- 120 - t_start
-    timing2 <- 366 - t_start + 30
+    timing2 <- 366 - t_start + vaccine_period + 21
     age_target <- create_fine_age_targets()
+    
     out <- expand_grid(
       t_start = t_start,
       R0 = R0,
       reduction1 = reduction1,
       reduction2 = reduction2,
       coverage = coverage,
+      mode = mode,
+      efficacy = efficacy,
+      hs_constraints = hs_constraints,
       age_target = age_target,
       income_group = income_group,
-      immunosenescence = immunosenescence,
-      mode = mode,
-      hs_constraints = hs_constraints,
-      efficacy = efficacy,
       duration_R = duration_R,
       duration_V = duration_V,
+      dur_vacc_delay = dur_vacc_delay,
       vaccine_start = vaccine_start,
-      seeding_cases = seeding_cases,
+      vaccine_period = vaccine_period,
       timing1 = timing1,
-      timing2 = timing2
+      timing2 = timing2,
+      immunosenescence = immunosenescence,
+      seeding_cases = seeding_cases,
+      reduce_inf = reduce_inf
     )
     return(out)
   }

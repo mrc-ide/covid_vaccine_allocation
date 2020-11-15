@@ -1,9 +1,8 @@
 ### Runs for performing vaccine allocation######################################
 # cov1 represents where limited countries allocated at high coverage
 ### Load packages ##############################################################
-library(dplyr)
+library(tidyverse)
 library(purrr)
-library(tidyr)
 library(nimue)
 library(furrr)
 
@@ -11,11 +10,12 @@ library(furrr)
 source("R/functions.R")
 
 ### Specify runs ###############################################################
-dat <- read_csv("data/non_optim_scenarios_cov1.csv") %>%
-  mutate(run_number = 1:nrow(dat))
+dat <- read_csv("data/non_optim_scenarios_cov1.csv")
+dat$run_number <- 1:nrow(dat)
 
 # start time for transmission
-t_start = 60
+t_start <- 60
+vaccine_period <- 30
 # transmission
 R0 <- 2.5
 # NPIs 2020 and 2021
@@ -24,7 +24,7 @@ Rt2 <- 2
 reduction1 <- 1-Rt1/R0
 reduction2 <- 1-Rt2/R0
 timing1 <- 120 - t_start
-timing2 <- 366 - t_start + 30
+timing2 <- 366 - t_start + vaccine_period + 21
 # Immunosenescence (efficacy in 65+ relative to efficacy)
 immunosenescence <- 1
 # Vaccine mode of action
@@ -32,16 +32,17 @@ mode <- "Infection"
 # Health system constraints
 hs_constraints <- "Present"
 # Efficacy
-efficacy <- 0.7
+efficacy <- 0.9
 # Durations of immunity
 duration_R <- 365
 duration_V <- 5000
+dur_vacc_delay <- 7
 # Vaccine start time
-vaccine_start <- 366 - t_start
+vaccine_start <- 366 - t_start + 21
 # Seeding cases
 seeding_cases <- 60
 # Reduce infectiousness in under 10 years
-reduce_inf <- reduce_inf
+reduce_inf <- 1
 # Run number 
 run_number <- 1:nrow(dat)
 
@@ -56,7 +57,9 @@ scenarios <- expand_grid(t_start = t_start,
                          efficacy = efficacy,
                          duration_R = duration_R,
                          duration_V = duration_V,
+                         dur_vacc_delay = dur_vacc_delay,
                          vaccine_start = vaccine_start,
+                         vaccine_period = vaccine_period,
                          seeding_cases = seeding_cases,
                          timing1 = timing1,
                          timing2 = timing2,

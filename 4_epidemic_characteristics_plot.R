@@ -5,8 +5,8 @@ library(patchwork)
 source("R/functions.R")
 
 # Plotting stuff
-Rt1_labs <- c('R[t1]=0.8', 'R[t1]=1', 'R[t1]=1.1')
-names(Rt1_labs) <- c(0.8, 1, 1.1)
+Rt1_labs <- c('R[t1]=0.9', 'R[t1]=1', 'R[t1]=1.1')
+names(Rt1_labs) <- c(0.9, 1, 1.1)
 
 R0_labs <- c('R[0]=2.5', 'R[0]=3.0')
 names(R0_labs) <- c(2.5, 3.0)
@@ -53,10 +53,10 @@ pd1 <- df_counter %>%
   mutate(R0 = factor(R0),
          Rt1 = factor(Rt1),
          Rt2 = factor(Rt2)) %>%
-  filter((R0 == 2.5 & Rt1 == 0.8 & Rt2 == 2.0) | (R0 == 2.5 & Rt1 == 1.1 & Rt2 == 2) | (R0 == 3.0 & Rt1 == 0.8 & Rt2 == 2))
+  filter((R0 == 2.5 & Rt1 == 0.9 & Rt2 == 2.0) | (R0 == 2.5 & Rt1 == 1.1 & Rt2 == 2) | (R0 == 3.0 & Rt1 == 0.9 & Rt2 == 2))
 
 g1 <- ggplot() +
-  geom_segment(data = pd1, aes(x = vaccine_start, y = 0, xend = vaccine_start, yend = Inf, linetype = "Vaccination start"), col = "black") +
+  geom_segment(data = pd1, aes(x = vaccine_start-21, y = 0, xend = vaccine_start-21, yend = Inf, linetype = "Vaccination start"), col = "black") +
   geom_segment(data = pd1, aes(x = vaccine_start+30, y = 0, xend = vaccine_start+30, yend = Inf, linetype = "Vaccination stop"), col = "black") +
   geom_line(data = pd1, aes(x = t, y = (value/50e6*1e6), col = R_labs), size= 1) +
   labs(x = "Time", y = "Deaths per million per day", col="A,B: Varying proportion in R at vaccination", linetype = "") +
@@ -78,7 +78,7 @@ pd2 <- df_main %>%
   mutate(R0 = factor(R0),
          Rt1 = factor(Rt1),
          Rt2 = factor(Rt2)) %>%
-  filter((R0 == 2.5 & Rt1 == 0.8 & Rt2 == 2.0) | (R0 == 2.5 & Rt1 == 1.1 & Rt2 == 2) | (R0 == 3.0 & Rt1 == 0.8 & Rt2 == 2)) %>%
+  filter((R0 == 2.5 & Rt1 == 0.9 & Rt2 == 2.0) | (R0 == 2.5 & Rt1 == 1.1 & Rt2 == 2) | (R0 == 3.0 & Rt1 == 0.9 & Rt2 == 2)) %>%
   select(R_labs, deaths_averted_2021, deaths_averted_2022) %>%
   mutate(deaths_averted = (deaths_averted_2021 + deaths_averted_2022)/50e6*1000)
 
@@ -86,7 +86,7 @@ g2 <- ggplot(data = pd2, aes(x = R_labs, y = deaths_averted , fill = R_labs)) +
   geom_col(alpha = 0.8) +
   theme_bw() +
   scale_fill_manual(values = cols1, labels = function(R_labs) parse(text=R_labs)) + 
-  scale_x_discrete(labels = c("X1%", "X2%", "X3%")) +
+  scale_x_discrete(labels = c("4%", "11%", "14%")) +
   labs(x = "Proportion in R at vaccination", y = "Deaths averted per thousand", fill = "Proportion in R at \nvaccination (A, B)") +
   theme(strip.background = element_rect(fill = NA),
         panel.border = element_blank(),
@@ -109,7 +109,7 @@ pd3a <- filter(pd3, t < vaccine_start + 30)
 pd3b <- filter(pd3, t >= vaccine_start + 30)
 
 g3 <-ggplot() +
-  geom_segment(data = pd3a, aes(x = vaccine_start, y = 0, xend = vaccine_start, yend = Inf, linetype = "Vaccination start"), col = "black") +
+  geom_segment(data = pd3a, aes(x = vaccine_start-21, y = 0, xend = vaccine_start-21, yend = Inf, linetype = "Vaccination start"), col = "black") +
   geom_segment(data = pd3a, aes(x = vaccine_start+30, y = 0, xend = vaccine_start+30, yend = Inf, linetype = "Vaccination stop"), col = "black") +
   geom_line(data = pd3a, aes(x = t, y = (value/50e6*1e6)), col = "black", size = 1) +
   geom_line(data = pd3b, aes(x = t, y = (value/50e6*1e6), col = R_labs), size = 1) +
@@ -153,48 +153,6 @@ g4 <- ggplot(data = pd4, aes(x = R_labs, y = deaths_averted , fill = R_labs)) +
 g4
 
 ##################################################################################
-# 70% vaccine efficacy, 80% coverage, 4 income settings
-# show life years saved and deaths averted as bar chart
-
-# plotting function
-plotfunc <- function(df, y) {
-  ggplot(filter(df, name == y), aes(x = income_group, y = value/50e6*1e3, fill = hs_constraints)) +
-    geom_col(position = "dodge") +
-    xlab("Income setting") +
-    ylab(paste0(y," per thousand")) +
-    scale_fill_manual(values = c("grey25", "grey70"), name = "G,H: Health system constraints") +
-    theme_bw() +
-    theme(strip.background = element_rect(fill = NA),
-          panel.border = element_blank(),
-          axis.line = element_line())
-}
-
-# Load data
-d5 <- readRDS("output/3_vacc_characteristics.rds") %>%
-  mutate(efficacy = factor(efficacy*100),
-         income_group = factor(income_group, levels = c("LIC","LMIC", "UMIC", "HIC")),
-         mode = factor(mode, levels = c("Infection", "Disease")),
-         vaccine_start = vaccine_start + t_start,
-         Rt1 = (1-reduction1)*R0,
-         Rt2 = (1-reduction2)*R0) 
-
-# Plot bar chart of 2021 impact
-pd5 <- d5 %>%
-  filter(efficacy == 70,
-         coverage == 0.8,
-         duration_R == 365,
-         mode == "Infection") %>%
-  select(income_group, hs_constraints, deaths_averted_2021, years_life_saved_2021) %>%
-  rename("Deaths averted" = "deaths_averted_2021", "Life-years gained" = "years_life_saved_2021") %>%
-  pivot_longer(c("Deaths averted", "Life-years gained"))
-
-g5 <- plotfunc(pd5, "Deaths averted")
-g6 <- plotfunc(pd5, "Life-years gained")
-
-g5
-g6
-
-##################################################################################
 # 70% vaccine efficacy, 80% coverage, HIC setting
 # show impact of immunity assumptions
 
@@ -205,7 +163,7 @@ pd7 <- df_counter %>%
          Rt2 == 2)
 
 g7 <- ggplot() +
-  geom_segment(data = pd7, aes(x = vaccine_start, y = 0, xend = vaccine_start, yend = Inf, linetype = "Vaccination start"), col = "black") +
+  geom_segment(data = pd7, aes(x = vaccine_start-21, y = 0, xend = vaccine_start-21, yend = Inf, linetype = "Vaccination start"), col = "black") +
   geom_segment(data = pd7, aes(x = vaccine_start+30, y = 0, xend = vaccine_start+30, yend = Inf, linetype = "Vaccination stop"), col = "black") +
   geom_line(data = pd7, aes(x = t, y = (value/50e6*1e6), col = duration_R), size = 1) +
   labs(x = "Time", y = "Deaths per million per day", col="E,F: Duration of natural immunity", linetype = "") +
@@ -253,7 +211,8 @@ pd9 <- readRDS("output/4_gradual_rollout.rds") %>%
   filter(income_group == "HIC",
          R0 == 2.5,
          Rt1 == 1.1,
-         Rt2 == 2) %>%
+         Rt2 == 2,
+         efficacy == 0.9) %>%
   select(-output_cf, -output_age, -output_age_cf) %>%
   unnest(output) %>%
   filter(compartment == "deaths",
@@ -265,11 +224,11 @@ pd9_cf <- pd9 %>%
 pd9 <- filter(pd9, coverage == 0.8)
 
 g9 <- ggplot() +
-  geom_segment(data = pd9, aes(x = vaccine_start, y = 0, xend = vaccine_start, yend = Inf), col = "black", linetype = "dashed") +
+  geom_segment(data = pd9, aes(x = vaccine_start-21, y = 0, xend = vaccine_start-21, yend = Inf), col = "black", linetype = "dashed") +
   geom_segment(data = pd9, aes(x = vaccine_start+365, y = 0, xend = vaccine_start+365, yend = Inf), col = "black", linetype = "dotted") +
   geom_line(data = filter(pd9, t >= vaccine_start), aes(x = t, y = (value/50e6*1e6), col = vaccine_coverage_mat), size = 1) +
   geom_line(data = filter(pd9_cf), aes(x = t, y = (value/50e6*1e6)), linetype = "longdash", col = "black", size = 1) +
-  labs(x = "Time", y = "Deaths per million per day", col="I,J: Vaccine targeting strategy") +
+  labs(x = "Time", y = "Deaths per million per day", col="G,H: Vaccine targeting strategy") +
   theme_bw() +
   scale_x_continuous(breaks = c(183,366,549,732,914), labels = c("Jul '20", "Jan '21", "Jul '21", "Jan '22", "Jul '22")) +
   theme(strip.background = element_rect(colour = NA, fill = NA),
@@ -289,7 +248,8 @@ pd10 <- readRDS("output/4_gradual_rollout.rds") %>%
          R0 == 2.5,
          Rt1 == 1.1,
          Rt2 == 2,
-         vaccine_period == 365) %>%
+         vaccine_period == 365,
+         efficacy == 0.9) %>%
   mutate(deaths_averted = (deaths_averted_2021)/50e6*1000)
 
 
@@ -308,9 +268,49 @@ g10 <- ggplot(data = pd10, aes(x = factor(vaccine_coverage_mat), y = deaths_aver
 g10
 
 ##################################################################################
+# 70% vaccine efficacy, 80% coverage, 4 income settings
+# show life years saved and deaths averted as bar chart
+
+# plotting function
+plotfunc <- function(df, y) {
+  ggplot(filter(df, name == y), aes(x = income_group, y = value/50e6*1e3, fill = hs_constraints)) +
+    geom_col(position = "dodge") +
+    xlab("Income setting") +
+    ylab(paste0(y," per thousand")) +
+    scale_fill_manual(values = c("grey25", "grey70"), name = "I,J: Health system constraints") +
+    theme_bw() +
+    theme(strip.background = element_rect(fill = NA),
+          panel.border = element_blank(),
+          axis.line = element_line())
+}
+
+# Load data
+d5 <- readRDS("output/3_vacc_characteristics.rds") %>%
+  mutate(efficacy = factor(efficacy*100),
+         income_group = factor(income_group, levels = c("LIC","LMIC", "UMIC", "HIC")),
+         vaccine_start = vaccine_start + t_start,
+         Rt1 = (1-reduction1)*R0,
+         Rt2 = (1-reduction2)*R0) 
+
+# Plot bar chart of 2021 impact
+pd5 <- d5 %>%
+  filter(efficacy == 90,
+         coverage == 0.8,
+         duration_R == 365,
+         mode == "Infection") %>%
+  select(income_group, hs_constraints, deaths_averted_2021, years_life_saved_2021) %>%
+  rename("Deaths averted" = "deaths_averted_2021", "Life-years gained" = "years_life_saved_2021") %>%
+  pivot_longer(c("Deaths averted", "Life-years gained"))
+
+g5 <- plotfunc(pd5, "Deaths averted")
+g6 <- plotfunc(pd5, "Life-years gained")
+
+g5
+g6
+##################################################################################
 # combine plots
 
-all_plots <- (g1 | g2 | g3 | g4 | g7 | g8 | g5 | g6 | g9 | g10) + plot_layout(guide = "collect", ncol = 2, nrow = 5)+ plot_annotation(tag_levels = 'A')
+all_plots <- (g1 | g2 | g3 | g4 | g7 | g8 | g9 | g10 | g5 | g6) + plot_layout(guide = "collect", ncol = 2, nrow = 5)+ plot_annotation(tag_levels = 'A')
 
 all_plots
 

@@ -8,7 +8,7 @@ library(readr)
 
 ### Load outputs ###############################################################
 d <- readRDS("output/6_non_optim_cov1.rds") %>%
-  select(t_start, R0, reduction1, reduction2, immunosenescence, mode, hs_constraints, efficacy, duration_R, duration_V, reduce_inf, vaccine_start, seeding_cases, timing1, timing2, strategy, income_group, target_group, age_target, coverage_children, coverage_middle, coverage_old, deaths_averted_2021, vaccine_n_2021) %>%
+  select(t_start, R0, reduction1, reduction2, immunosenescence, mode, hs_constraints, efficacy, duration_R, duration_V, vaccine_start, vaccine_period, dur_vacc_delay, reduce_inf, vaccine_start, seeding_cases, timing1, timing2, strategy, income_group, target_group, age_target, coverage_children, coverage_middle, coverage_old, deaths_averted_2021, vaccine_n_2021) %>%
   filter(!(coverage_children == 0 & coverage_middle == 0 & coverage_old == 0))
 
 ################################################################################

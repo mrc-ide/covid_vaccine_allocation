@@ -8,8 +8,8 @@ library(purrr)
 library(tidyr)
 
 # Plotting stuff
-Rt1_labs <- c('R[t1]=0.8', 'R[t1]=1', 'R[t1]=1.1')
-names(Rt1_labs) <- c(0.8, 1, 1.1)
+Rt1_labs <- c('R[t1]=0.7', 'R[t1]=0.9', 'R[t1]=1.1')
+names(Rt1_labs) <- c(0.7, 0.9, 1.1)
 
 R0_labs <- c('R[0]=2.5', 'R[0]=3.0')
 names(R0_labs) <- c(2.5, 3.0)
@@ -24,9 +24,7 @@ counter_out <- readRDS("output/1_counter.rds") %>%
   mutate(prop_R = map2_dbl(output, vaccine_start, summarise_R, pop = 50e6))
 
 pd <- counter_out %>%
-  filter(vaccine_start == 365,
-         coverage == 0,
-         Rt1 > 0.6) %>%
+  filter(coverage == 0) %>%
   select(R0, Rt1, Rt2, income_group, duration_R, output_cf, prop_R, timing1, timing2) %>%
   unnest(cols = output_cf) %>%
   filter(compartment == "deaths",
@@ -60,7 +58,7 @@ g1 <- ggplot() +
   scale_color_viridis_d(option = "D", begin = 0, end = 0.9, direction = -1) +
   geom_text(data=pd1,
             aes(x=100,
-                y=90,
+                y=70,
                 label=paste0("Proportion in\nR = ", paste0(round(prop_R,2)*100, "%"))),
             color="darkgray", 
             size=3, hjust = 0) +
@@ -70,7 +68,7 @@ g1 <- ggplot() +
 
 g1
 
-ggsave("plots/Fig_S5.png", g1, height = 4.5, width = 8.5)
+ggsave("plots/FigS6.png", g1, height = 4.5, width = 8.5)
 
 #################################################################
 # Single trajectory plots with and without waning natural immunity
@@ -88,46 +86,50 @@ pd3 <- pd %>%
 pd3a <- filter(pd3, Rt2 == 2, t<366, is.na(value) == F)
 pd3b <- filter(pd3, t >= 366, t<1035, is.na(value) == F)
 
-g3 <- ggplot() +
-  geom_segment(data = pd3, aes(x = timing1, y = 0, xend = timing1, yend = Inf), col = "black", linetype = "dashed") +
-  geom_segment(data = pd3, aes(x = timing2, y = 0, xend = timing2, yend = Inf), col = "black", linetype = "dashed") +
-  geom_line(data = pd3a, aes(x = t, y = (value/50e6*1e6)), col = "black") +
-  geom_line(data = pd3b, aes(x = t, y = (value/50e6*1e6), col = Rt2)) +
-  labs(x = "Time", y = "Deaths per million per day", color=expression(paste("R"[t2]))) +
-  theme_bw() +
-  facet_wrap(~duration_R, labeller = labeller(duration_R = duration_R_labs), nrow = 1, scales='free') +
-  scale_x_continuous(breaks = c(183,366,549,732,914), labels = c("Jul '20", "Jan '21", "Jul '21", "Jan '22", "Jul '22")) +
-  scale_y_continuous(limits = c(0,100)) +
-  geom_text(data=pd3,
-            aes(x=600,
-                y=80,
-                label=paste0("proportion in\nR = ", paste0(round(prop_R,3)*100, "%"))),
-            color="darkgray",
-            size=3, hjust = 0) +
-  annotate("text", x = 90 + 80, y = 95, label = "t[1]", hjust = 0, parse = T) +
-  annotate("text", x = 300, y = 85, label = "t[2]", hjust = 0, parse = T) +
-  theme(strip.background = element_rect(colour = NA, fill = NA),
-        panel.border = element_blank(),
-        axis.line = element_line()) +
-  scale_color_viridis_d(option = "D", begin = 0, end = 0.9, direction = -1)
+plotfunc_counterfactual <- function(pd3, pd3a, pd3b, dur_R){
+  g3 <- ggplot() +
+    geom_segment(data = filter(pd3, duration_R == dur_R), aes(x = timing1, y = 0, xend = timing1, yend = Inf), col = "black", linetype = "dashed") +
+    geom_segment(data = filter(pd3, duration_R == dur_R), aes(x = timing2, y = 0, xend = timing2, yend = Inf), col = "black", linetype = "dashed") +
+    geom_line(data = filter(pd3a, duration_R == dur_R), aes(x = t, y = (value/50e6*1e6)), col = "black") +
+    geom_line(data = filter(pd3b, duration_R == dur_R), aes(x = t, y = (value/50e6*1e6), col = Rt2)) +
+    labs(x = "Time", y = "Deaths per million per day", color=expression(paste("R"[t2]))) +
+    theme_bw() +
+    scale_x_continuous(breaks = c(183,366,549,732,914), labels = c("Jul '20", "Jan '21", "Jul '21", "Jan '22", "Jul '22")) +
+    scale_y_continuous(limits = c(0,70)) +
+    # geom_text(data=filter(pd3, duration_R == dur_R),
+    #           aes(x=600,
+    #               y=65,
+    #               label=paste0("proportion in\nR = ", paste0(round(prop_R,2)*100, "%"))),
+    #           color="darkgray",
+    #           size=3, hjust = 0) +
+    annotate("text", x = 90 + 80, y = 65, label = "t[1]", hjust = 0, parse = T) +
+    annotate("text", x = 300, y = 55, label = "t[2]", hjust = 0, parse = T) +
+    theme(strip.background = element_rect(colour = NA, fill = NA),
+          panel.border = element_blank(),
+          axis.line = element_line()) +
+    scale_color_viridis_d(option = "D", begin = 0, end = 0.9, direction = -1)
+}
 
+g3a <- plotfunc_counterfactual(pd3, pd3a, pd3b, dur_R = 365)
+g3b <- plotfunc_counterfactual(pd3, pd3a, pd3b, dur_R = Inf)
 
-g3
+fig1plot <- (g3a | g3b) + plot_annotation(tag_levels = 'A') + plot_layout(guide = "collect", ncol = 2, nrow = 1)
+fig1plot
 
-ggsave("plots/Fig1.png", g3, height = 3.5, width = 7)
+ggsave("plots/Fig1.png", fig1plot, height = 4, width = 8.5)
 
 #################################################################
 # Single trajectory plots with and without waning natural immunity, for the other 3 income settings
 
 duration_R_labs <- c("1 year immunity", "Long immunity")
 names(duration_R_labs) <- c(365, Inf)
-
-
 pd4 <- pd %>% 
+  mutate(duration_R = factor(duration_R, levels = c(365, Inf)),
+         income_group = factor(income_group, levels = c("HIC","UMIC", "LMIC", "LIC"))) %>%
   filter(R0 == 2.5,
          Rt1 == 1.1,
-         income_group != "HIC") %>%
-  mutate(duration_R = factor(duration_R, levels = c(365, Inf)))
+         income_group != "HIC")
+
 
 pd4a <- filter(pd4, Rt2 == 2, t<366, is.na(value) == F)
 pd4b <- filter(pd4, t >= 366, t<1035, is.na(value) == F)
@@ -143,12 +145,12 @@ g4 <- ggplot() +
   scale_x_continuous(breaks = c(183,366,549,732,914), labels = c("Jul '20", "Jan '21", "Jul '21", "Jan '22", "Jul '22")) +
   geom_text(data=pd4,
             aes(x=650,
-                y=140,
+                y=65,
                 label=paste0("proportion in\nR = ", paste0(round(prop_R,2)*100, "%"))),
             color="darkgray", 
             size=3, hjust = 0) +
-  annotate("text", x = 140, y = 150, label = "t[1]", hjust = 0, parse = T) +
-  annotate("text", x = 345, y = 140, label = "t[2]", hjust = 0, parse = T)+
+  annotate("text", x = 140, y = 75, label = "t[1]", hjust = 0, parse = T) +
+  annotate("text", x = 345, y = 65, label = "t[2]", hjust = 0, parse = T)+
   theme(strip.background = element_rect(colour = NA, fill = NA),
         panel.border = element_blank(),
         axis.line = element_line()) +
@@ -156,4 +158,4 @@ g4 <- ggplot() +
 
 g4
 
-ggsave("plots/counterfactual_plots_income_settings_SI.png", g4, height = 9, width = 7)
+ggsave("plots/FigS5.png", g4, height = 9, width = 7)

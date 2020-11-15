@@ -27,7 +27,17 @@ scenarios <- df %>%
 
 # Age-based coverage vector
 scenarios$varying_coverage <- 1
+
+# other parameters
 scenarios <- left_join(scenarios, dat)
+
+scenarios$t_start <- 60
+scenarios$vaccine_period <- 30
+scenarios$timing1 <- 120 - scenarios$t_start
+scenarios$timing2 <- 366 - scenarios$t_start + scenarios$vaccine_period + 21
+scenarios$dur_vacc_delay <- 7
+# Vaccine start time
+scenarios$vaccine_start <- 366 - scenarios$t_start + 21
 
 nrow(scenarios)
 

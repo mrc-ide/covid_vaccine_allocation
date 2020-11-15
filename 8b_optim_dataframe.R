@@ -6,7 +6,6 @@ library(purrr)
 library(tidyr)
 library(readr)
 library(stringr)
-###############################################################################
 
 ### Load outputs ###############################################################
 raw <- read_csv("cluster_outputs_default/AGGREGATOR.csv")
@@ -15,7 +14,7 @@ d <- left_join(raw, scenarios) %>%
   select(-run_number, -directory_out)
 
 d_cf <- filter(d, age_target == "0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0") %>%
-  select(-coverage, -age_target) %>%
+  select(-coverage, -age_target, -vaccine_n) %>%
   rename("deaths_cf" = "deaths",
          "life_years_lost_cf" = "life_years_lost")
 
@@ -47,6 +46,7 @@ d_main_income_region <- y %>%
   select(income_group, age_target, pop_2019, proportion) %>%
   left_join(d, by = c("income_group", "age_target")) %>%
   mutate(deaths_averted_2021 = deaths_averted_2021 / 50e6 * pop_2019,
+         #vaccine_n_2021 = round(vaccine_n / 50e6 * pop_2019),
          vaccine_n_2021 = pop_2019 * proportion/100 * coverage,
          dapd_2021 = deaths_averted_2021 / vaccine_n_2021,
          additional_life_years_2021 = additional_life_years_2021 / 50e6 * pop_2019
@@ -62,7 +62,7 @@ d_imm <- left_join(raw_imm, scenarios_imm) %>%
   select(-run_number, -directory_out)
 
 d_cf_imm <- filter(d_imm, age_target == "0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0") %>%
-  select(-coverage, -age_target) %>%
+  select(-coverage, -age_target, -vaccine_n) %>%
   rename("deaths_cf" = "deaths",
          "life_years_lost_cf" = "life_years_lost")
 
@@ -74,9 +74,11 @@ d_imm <- d_imm %>%
 
 d_main_income_region_imm <- y %>%
   select(income_group, age_target, pop_2019, proportion) %>%
+  filter(age_target %in% unique(d_imm$age_target)) %>%
   left_join(d_imm, by = c("income_group", "age_target")) %>%
-  mutate(deaths_averted_2021 = deaths_averted_2021 / 50e6 * pop_2019,
+  mutate(deaths_averted_2021 = round(deaths_averted_2021 / 50e6 * pop_2019),
          vaccine_n_2021 = pop_2019 * proportion/100 * coverage,
+         #vaccine_n_2021 = round(vaccine_n / 50e6 * pop_2019),
          dapd_2021 = deaths_averted_2021 / vaccine_n_2021,
          additional_life_years_2021 = additional_life_years_2021 / 50e6 * pop_2019
   )

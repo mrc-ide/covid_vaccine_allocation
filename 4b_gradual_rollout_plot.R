@@ -11,7 +11,8 @@ pd9 <- readRDS("output/4_gradual_rollout.rds") %>%
   filter(income_group == "HIC",
          R0 == 2.5,
          Rt1 == 1.1,
-         vaccine_period == 365) %>%
+         vaccine_period == 365,
+         efficacy == 0.9) %>%
   select(-output_cf, -output_age, -output_age_cf) %>%
   unnest(output) %>%
   filter(compartment == "deaths")
@@ -29,7 +30,8 @@ pd10 <- readRDS("output/4_gradual_rollout.rds") %>%
          income_group == "HIC",
          R0 == 2.5,
          Rt1 == 1.1,
-         vaccine_period == 365) %>%
+         vaccine_period == 365,
+         efficacy == 0.9) %>%
   mutate(deaths_averted = (deaths_averted_2021)/50e6*1000)
 
 ##################################################################################
@@ -37,7 +39,7 @@ g1_plot_line <- function(dat = dat, dat_cf = dat_cf, Rt2_val = Rt2_val){
   dat <- filter(dat, Rt2 == Rt2_val)
   dat_cf <- filter(dat_cf, Rt2 == Rt2_val)
   ggplot() +
-  geom_segment(data = dat, aes(x = vaccine_start, y = 0, xend = vaccine_start, yend = Inf), col = "black", linetype = "dashed") +
+  geom_segment(data = dat, aes(x = vaccine_start-21, y = 0, xend = vaccine_start-21, yend = Inf), col = "black", linetype = "dashed") +
   geom_segment(data = dat, aes(x = vaccine_start+365, y = 0, xend = vaccine_start+365, yend = Inf), col = "black", linetype = "dotted") +
   geom_line(data = filter(dat, t >= vaccine_start), aes(x = t, y = (value/50e6*1e6), col = vaccine_coverage_mat), size = 1) +
   geom_line(data = filter(dat_cf), aes(x = t, y = (value/50e6*1e6)), col = "black", size = 1, linetype = "longdash") +

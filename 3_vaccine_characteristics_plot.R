@@ -94,6 +94,6 @@ p3 <- ggplot(pd3, aes(x = coverage * 100, y = deaths_averted_2021 / 50e6 * 1e3, 
         panel.border = element_blank(),
         axis.line = element_line())
 
-ggsave("plots/coverage_efficacy_mode_income_constraints_SI.png", p3, height = 6, width = 10)
+p3
 
-
+ggsave("plots/FigS8.png", p3, height = 6, width = 10)
