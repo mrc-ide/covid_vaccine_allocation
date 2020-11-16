@@ -110,4 +110,4 @@ g1 <- ggplot() +
 
 g1
 
-ggsave("plots/within_country_optim_frontier.png", g1, height = 6, width = 8)
+ggsave("plots/FigS11.png", g1, height = 6, width = 8)

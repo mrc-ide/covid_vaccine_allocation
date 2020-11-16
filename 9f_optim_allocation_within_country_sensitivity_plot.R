@@ -14,15 +14,22 @@ library(ggplot2)
 
 source("R/age_grid_plot_functions.R")
 
-### Load outputs ###############################################################
-sensitivity_run <- "immunosenescence"# lower_Rt2 hs_constraints_absent" #"mode_disease" #"reduce_efficacy" #immunosenescence
-df1 <- read_csv(paste0("optim_dataframes/fig_4_inputs_", sensitivity_run, ".csv"))
+### Run across all sensitivity analyses ########################################
 
-if (sensitivity_run == "reduce_efficacy"){sensitivity_run_text = "Vaccine efficacy 50%"}
-if (sensitivity_run == "immunosenescence"){sensitivity_run_text = "Immunosenescence"}
-if (sensitivity_run == "mode_disease"){sensitivity_run_text = "Disease-blocking vaccine"}
-if (sensitivity_run == "lower_Rt2"){sensitivity_run_text = "Higher level of continued NPIs"}
-if (sensitivity_run == "hs_constraints_absent"){sensitivity_run_text = "Health system constraints absent"}
+sr_list <- c("reduce_efficacy", "immunosenescence", "mode_disease", "lower_Rt2", "hs_constraints_absent", "reduce_inf")
+
+for (sr in sr_list){
+
+### Load outputs ###############################################################
+
+df1 <- read_csv(paste0("optim_dataframes/fig_4_inputs_", sr, ".csv"))
+
+if (sr == "reduce_efficacy"){sensitivity_run_text = "Vaccine efficacy 70%"}
+if (sr == "immunosenescence"){sensitivity_run_text = "Immunosenescence"}
+if (sr == "mode_disease"){sensitivity_run_text = "Disease-blocking vaccine"}
+if (sr == "lower_Rt2"){sensitivity_run_text = "Higher level of continued NPIs"}
+if (sr == "hs_constraints_absent"){sensitivity_run_text = "Health system constraints absent"}
+if (sr == "reduce_inf"){sensitivity_run_text = "Reduced infectiousness < 10 years"}
 
 ### Plotting params ############################################################
 
@@ -52,4 +59,5 @@ all_plots <- (g1 | g2 | g3 | g4 | g5 | g6 | g7 | g8) + plot_layout(guide = "coll
 
 all_plots
 
-ggsave(paste0("plots/Fig4_", sensitivity_run,".png"), all_plots, height = 11, width = 10)
+ggsave(paste0("plots/Fig4_", sr,".png"), all_plots, height = 11, width = 10)
+}

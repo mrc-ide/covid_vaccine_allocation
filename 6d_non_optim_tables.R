@@ -17,7 +17,7 @@ d_summ <- rbind(d1, d2) %>%
   select(strategy, income_group, age_target, deaths_averted_per_m, dap100d_2021, total_deaths_averted_per_m, dap100d_total)
 
 # save summary table
-write_csv(d_summ, "tables/non_optim_results_summary_table_2_S2.csv")
+write_csv(d_summ, "tables/non_optim_results_summary_table_2_S3.csv")
 
 # sensitivity analysis table - table S4
 d_table <- read_csv("optim_dataframes/non_optim_allocation_income_cov2.csv") %>%
@@ -33,7 +33,7 @@ d_table <- read_csv("optim_dataframes/non_optim_allocation_income_cov2.csv") %>%
 write_csv(d_table, "tables/non_optim_results_summary_sensitivity.csv")
 
 # table s4
-tab_s4 <- d_table %>%
+tab_S5 <- d_table %>%
   select(strategy, sensitivity_run, total_deaths_averted_per_m, dap100d_total) %>%
   unique() %>%
   mutate(measure = paste0(total_deaths_averted_per_m, " (", dap100d_total, ")")) %>%
@@ -41,5 +41,5 @@ tab_s4 <- d_table %>%
   select(strategy, sensitivity_run, measure) %>%
   pivot_wider(names_from = "sensitivity_run", id_cols = "strategy", values_from = "measure")
 
-write_csv(tab_s4, "tables/table_s4.csv")
+write_csv(tab_S5, "tables/table_S5.csv")
 

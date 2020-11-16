@@ -32,10 +32,10 @@ df8 <- read_csv("tables/optimal_strategy_between_country_icg_life_years.csv") %>
 
 df_all <- rbind(df1, df2, df3, df4, df5, df6, df7, df8)
 
-tab_s3 <- df_all %>%
+tab_S4 <- df_all %>%
   select(-doses_per_pop, -prop_doses, -doses)
 
-write_csv(tab_s3, "tables/table_S3.csv")
+write_csv(tab_S4, "tables/table_S4.csv")
 
 # table 3
 tab_3 <- df_all %>%

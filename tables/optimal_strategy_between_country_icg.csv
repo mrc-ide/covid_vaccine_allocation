@@ -1,0 +1,5 @@
+income_group,doses,prop_doses,doses_per_pop,deaths_averted_per_m,dap100fvp,total_deaths_averted_per_m,dap100fvp_total
+HIC,282471018,33.2,27.1,3138,1.16,1609,1.373
+UMIC,317339190,37.3,11.5,1348,1.167,1609,1.373
+LMIC,197260136,23.2,6.9,1338,1.925,1609,1.373
+LIC,52929667,6.2,8.5,1430,1.691,1609,1.373
