@@ -19,7 +19,7 @@ d_summ <- rbind(d1, d2) %>%
 # save summary table
 write_csv(d_summ, "tables/non_optim_results_summary_table_2_S3.csv")
 
-# sensitivity analysis table - table S4
+# sensitivity analysis table - table S5
 d_table <- read_csv("optim_dataframes/non_optim_allocation_income_cov2.csv") %>%
   mutate(income_group = factor(income_group, levels = c("LIC","LMIC", "UMIC", "HIC"))) %>%
   mutate(dap100d_2021 = round(dapd_2021 * 100, 3),
@@ -32,7 +32,7 @@ d_table <- read_csv("optim_dataframes/non_optim_allocation_income_cov2.csv") %>%
 # supplementary table - all details
 write_csv(d_table, "tables/non_optim_results_summary_sensitivity.csv")
 
-# table s4
+# table s5
 tab_S5 <- d_table %>%
   select(strategy, sensitivity_run, total_deaths_averted_per_m, dap100d_total) %>%
   unique() %>%
