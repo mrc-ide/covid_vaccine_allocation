@@ -35,7 +35,7 @@ age_target <- "1_1_1_1_1_1_1_1_1_1_1_1_1_1_1_1_1"
 # Income group
 income_group <- c("HIC")
 # Durations of immunity
-duration_R <- c(183, 365, Inf)
+duration_R <- 365 #c(183, 365, Inf)
 duration_V <- 5000
 dur_vacc_delay <- 7
 # Vaccine start time

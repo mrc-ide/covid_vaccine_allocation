@@ -65,3 +65,4 @@ out <- rbind(d1, d2, d3, d4, d5, d6) %>%
   select(-doses_available)
 
 write_csv(out, "optim_dataframes/non_optim_allocation_income_cov1.csv")
+

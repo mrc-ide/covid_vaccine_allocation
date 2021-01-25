@@ -61,6 +61,6 @@ d_summary_icg <- d_summary %>%
 ##################################################################
 # Save tables
 ##################################################################
-write_csv(d_summary, paste0("tables/optimal_strategy_between_country_", sr, ".csv"))
-write_csv(d_summary_icg, paste0("tables/optimal_strategy_between_country_icg_", sr, ".csv"))
+write_csv(d_summary, paste0("between_country_optim_outputs/optimal_strategy_between_country_", sr, ".csv"))
+write_csv(d_summary_icg, paste0("between_country_optim_outputs/optimal_strategy_between_country_icg_", sr, ".csv"))
 }

@@ -13,23 +13,23 @@ library(ggplot2)
 ### Load outputs ###############################################################
 
 # Supplementary table
-df1 <- read_csv("tables/optimal_strategy_between_country_icg.csv") %>%
+df1 <- read_csv("between_country_optim_outputs/optimal_strategy_between_country_icg.csv") %>%
   mutate(strategy = "default")
-df2 <- read_csv("tables/optimal_strategy_between_country_icg_reduce_efficacy.csv") %>%
+df2 <- read_csv("between_country_optim_outputs/optimal_strategy_between_country_icg_reduce_efficacy.csv") %>%
   mutate(strategy = "reduce_efficacy")
-df3 <- read_csv("tables/optimal_strategy_between_country_icg_immunosenescence.csv") %>%
+df3 <- read_csv("between_country_optim_outputs/optimal_strategy_between_country_icg_immunosenescence.csv") %>%
   mutate(strategy = "immunosenescence")
-df4 <- read_csv("tables/optimal_strategy_between_country_icg_mode_disease.csv") %>%
+df4 <- read_csv("between_country_optim_outputs/optimal_strategy_between_country_icg_mode_disease.csv") %>%
   mutate(strategy = "mode_disease")
-df5 <- read_csv("tables/optimal_strategy_between_country_icg_lower_Rt2.csv") %>%
+df5 <- read_csv("between_country_optim_outputs/optimal_strategy_between_country_icg_lower_Rt2.csv") %>%
   mutate(strategy = "lower_Rt2")
-df6 <- read_csv("tables/optimal_strategy_between_country_icg_higher_Rt2.csv") %>%
+df6 <- read_csv("between_country_optim_outputs/optimal_strategy_between_country_icg_higher_Rt2.csv") %>%
   mutate(strategy = "higher_Rt2")
-df7 <- read_csv("tables/optimal_strategy_between_country_icg_hs_constraints_absent.csv") %>%
+df7 <- read_csv("between_country_optim_outputs/optimal_strategy_between_country_icg_hs_constraints_absent.csv") %>%
   mutate(strategy = "hs_constraints_absent")
-df8 <- read_csv("tables/optimal_strategy_between_country_icg_reduce_inf.csv") %>%
+df8 <- read_csv("between_country_optim_outputs/optimal_strategy_between_country_icg_reduce_inf.csv") %>%
   mutate(strategy = "reduce_inf")
-df9 <- read_csv("tables/optimal_strategy_between_country_icg_life_years.csv") %>%
+df9 <- read_csv("between_country_optim_outputs/optimal_strategy_between_country_icg_life_years.csv") %>%
   mutate(strategy = "life_years")
 
 df_all <- rbind(df1, df2, df3, df4, df5, df6, df7, df8, df9)

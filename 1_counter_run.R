@@ -1,7 +1,8 @@
 ### Counterfactuals ############################################################
+# Figure S5, Figure S6, Figure 1
 
 ### Load packages ##############################################################
-# devtools::install_github("mrc-ide/nimue@prioritisation_matrices")
+# devtools::install_github("mrc-ide/nimue")
 library(dplyr)
 library(purrr)
 library(tidyr)
@@ -32,6 +33,7 @@ vaccine_start <- 366 - t_start + 21
 income_group <- c("HIC", "UMIC", "LMIC", "LIC")
 # Durations of immunity
 duration_R <- c(365, Inf)
+dur_vacc_delay <- 7
 # Seeding cases
 seeding_cases <- 60
 # Scenario table

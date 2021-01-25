@@ -58,5 +58,5 @@ d_summary_icg <- d_summary %>%
 # Save tables
 ##################################################################
 #write_csv(d_summary, "tables/optimal_strategy_between_country_life_years.csv")
-write_csv(d_summary_icg, "tables/optimal_strategy_between_country_icg_life_years.csv")
+write_csv(d_summary_icg, "between_country_optim_outputs/optimal_strategy_between_country_icg_life_years.csv")
 
