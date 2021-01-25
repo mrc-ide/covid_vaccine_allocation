@@ -1,3 +1,5 @@
+# Figure 3
+
 # Load packages
 library(dplyr)
 library(ggplot2)
@@ -11,9 +13,7 @@ names(Rt1_labs) <- c(0.9, 1, 1.1)
 R0_labs <- c('R[0]=2.5', 'R[0]=3.0')
 names(R0_labs) <- c(2.5, 3.0)
 
-#cols1 <- c("#de7065ff", "#440154ff", "#efe350ff")
 cols1 <- c("#08519c", "#440154ff", "#9ecae1")
-#cols2 <- c( "#f9a242ff", "#b8627dff","#440154ff")
 cols2 <- c( "#993366","#440154ff", "#e6b3cc")
 cols3 <- c("#8c2d04", "#fe9929", "#fed976")
 
@@ -113,7 +113,7 @@ g3 <-ggplot() +
   geom_segment(data = pd3a, aes(x = vaccine_start+30, y = 0, xend = vaccine_start+30, yend = Inf, linetype = "Vaccination stop"), col = "black") +
   geom_line(data = pd3a, aes(x = t, y = (value/50e6*1e6)), col = "black", size = 1) +
   geom_line(data = pd3b, aes(x = t, y = (value/50e6*1e6), col = R_labs), size = 1) +
-  labs(x = "Time", y = "Deaths per million per day", col="C,D: Transmission from February 2021", linetype = "") +
+  labs(x = "Time", y = "Deaths per million per day", col="C,D: Transmission from March 2021", linetype = "") +
   theme_bw() +
   scale_x_continuous(breaks = c(183,366,549,732,914), labels = c("Jul '20", "Jan '21", "Jul '21", "Jan '22", "Jul '22")) +
   theme(strip.background = element_rect(colour = NA, fill = NA),
@@ -153,55 +153,6 @@ g4 <- ggplot(data = pd4, aes(x = R_labs, y = deaths_averted , fill = R_labs)) +
 g4
 
 ##################################################################################
-# 70% vaccine efficacy, 80% coverage, HIC setting
-# show impact of immunity assumptions
-
-pd7 <- df_counter %>% 
-  filter(income_group == "HIC",
-         R0 == 2.5,
-         Rt1 == 1.1,
-         Rt2 == 2)
-
-g7 <- ggplot() +
-  geom_segment(data = pd7, aes(x = vaccine_start-21, y = 0, xend = vaccine_start-21, yend = Inf, linetype = "Vaccination start"), col = "black") +
-  geom_segment(data = pd7, aes(x = vaccine_start+30, y = 0, xend = vaccine_start+30, yend = Inf, linetype = "Vaccination stop"), col = "black") +
-  geom_line(data = pd7, aes(x = t, y = (value/50e6*1e6), col = duration_R), size = 1) +
-  labs(x = "Time", y = "Deaths per million per day", col="E,F: Duration of natural immunity", linetype = "") +
-  theme_bw() +
-  scale_x_continuous(breaks = c(183,366,549,732,914), labels = c("Jul '20", "Jan '21", "Jul '21", "Jan '22", "Jul '22")) +
-  theme(strip.background = element_rect(colour = NA, fill = NA),
-        panel.border = element_blank(),
-        axis.line = element_line(),
-        legend.text.align = 0) +
-  scale_color_manual(values = cols2, labels =c("6 months", "1 year", "Long")) +
-  scale_linetype_manual(values = c("dashed", "dotted"))
-
-g7
-
-##################################################################################
-pd8 <- df_main %>%
-  filter(coverage == 0.8,
-         income_group == "HIC",
-         R0 == 2.5,
-         Rt1 == 1.1,
-         Rt2 == 2) %>%
-  mutate(deaths_averted = (deaths_averted_2021)/50e6*1000)
-
-g8 <- ggplot(data = pd8, aes(x = factor(duration_R), y = deaths_averted , fill = factor(duration_R))) +
-  geom_col(alpha = 0.8) +
-  theme_bw() +
-  scale_fill_manual(values = cols2, labels = c("6 months", "1 year", "Long")) +
-  scale_x_discrete(labels = c("6 months", "1 year", "Long")) +
-  labs(x = "Immunity duration", y = "Deaths averted per thousand", fill = "", parse = T) +
-  theme(strip.background = element_rect(fill = NA),
-        panel.border = element_blank(),
-        axis.line = element_line(),
-        legend.text.align = 0,
-        legend.position = "none")
-
-g8
-
-##################################################################################
 # illustrate impact of longer vaccine roll-out
 pd9 <- readRDS("output/4_gradual_rollout.rds") %>%
   mutate(vaccine_start = vaccine_start + t_start,
@@ -228,7 +179,7 @@ g9 <- ggplot() +
   geom_segment(data = pd9, aes(x = vaccine_start+365, y = 0, xend = vaccine_start+365, yend = Inf), col = "black", linetype = "dotted") +
   geom_line(data = filter(pd9, t >= vaccine_start), aes(x = t, y = (value/50e6*1e6), col = vaccine_coverage_mat), size = 1) +
   geom_line(data = filter(pd9_cf), aes(x = t, y = (value/50e6*1e6)), linetype = "longdash", col = "black", size = 1) +
-  labs(x = "Time", y = "Deaths per million per day", col="G,H: Vaccine targeting strategy") +
+  labs(x = "Time", y = "Deaths per million per day", col="E,F: Vaccine targeting strategy") +
   theme_bw() +
   scale_x_continuous(breaks = c(183,366,549,732,914), labels = c("Jul '20", "Jan '21", "Jul '21", "Jan '22", "Jul '22")) +
   theme(strip.background = element_rect(colour = NA, fill = NA),
@@ -277,7 +228,7 @@ plotfunc <- function(df, y) {
     geom_col(position = "dodge") +
     xlab("Income setting") +
     ylab(paste0(y," per thousand")) +
-    scale_fill_manual(values = c("grey25", "grey70"), name = "I,J: Health system constraints") +
+    scale_fill_manual(values = c("grey25", "grey70"), name = "G,H: Health system constraints") +
     theme_bw() +
     theme(strip.background = element_rect(fill = NA),
           panel.border = element_blank(),
@@ -310,8 +261,10 @@ g6
 ##################################################################################
 # combine plots
 
-all_plots <- (g1 | g2 | g3 | g4 | g7 | g8 | g9 | g10 | g5 | g6) + plot_layout(guide = "collect", ncol = 2, nrow = 5)+ plot_annotation(tag_levels = 'A')
+all_plots <- (g1 | g2 | g3 | g4 | g9 | g10 | g5 | g6) + plot_layout(guide = "collect", ncol = 2, nrow = 5)+ plot_annotation(tag_levels = 'A')
 
 all_plots
 
-ggsave("plots/Fig3.png", all_plots, height = 12, width = 10)
+#ggsave("plots/Fig3.png", all_plots, height = 12, width = 10)
+ggsave("plots/Fig3.png", all_plots, height = 11, width = 10)
+

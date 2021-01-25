@@ -14,16 +14,19 @@ create_age_targets <- function() {
   
   age_target <- age_target_all[contig, ]
 }
+t <- create_age_targets()
 
 pd <- t %>%
   mutate(strategy = 1:n(),
          row = rep(1:4, each = 350)[1:nrow(t)]) %>%
   pivot_longer(-c(strategy, row), names_to = "Age group", values_to = "Target") %>%
   mutate(`Age group` = as.numeric(as.factor(`Age group`)))
+
 x <- seq(0,80,5)
 y <- seq(4,84,5)
 z <- paste0(x,"-",y)
 z[17] <- "80+"
+
 g1 <- ggplot(pd, aes(x = strategy, y = `Age group`, fill = factor(Target))) + 
   geom_tile() +
   facet_wrap(~ row, scales = "free", ncol = 1) + 

@@ -8,13 +8,13 @@ library(readr)
 library(stringr)
 ################################################################################
 
-sr_list <- c("reduce_efficacy", "immunosenescence", "mode_disease", "lower_Rt2", "hs_constraints_absent", "reduce_inf")
+sr_list <- c("reduce_efficacy", "immunosenescence", "mode_disease", "lower_Rt2", "hs_constraints_absent", "reduce_inf", "higher_Rt2")
 
 for (sr in sr_list){
 
 ### Load outputs ###############################################################
-raw <- read_csv(paste0("cluster_outputs_sensitivity/AGGREGATOR_", sr, ".csv"))
-scenarios <- read_csv("cluster_outputs_sensitivity/scenarios.csv") %>%
+raw <- read_csv(paste0("output_sensitivity/AGGREGATOR_", sr, ".csv"))
+scenarios <- read_csv("output_sensitivity/scenarios.csv") %>%
   filter(sensitivity_run == sr)
 d <- left_join(raw, scenarios) %>%
   #rename("deaths" = "d") %>%

@@ -30,7 +30,7 @@ for (i in 1:nrow(d_summary)){
 d_summary <- d_summary %>%
   select(income_group, age_target, pop_2019, partition_size, income_group_size, doses, deaths_averted, prop_doses, proportion_pop) %>%
   mutate(coverage = round((partition_size / income_group_size * 0.8)*100,1),
-         dap100fvp = round(deaths_averted / doses, 3)) %>%
+         dap100fvp = round(deaths_averted / doses, 2)) %>%
   select(-pop_2019, -proportion_pop)
 
 d_summary
@@ -44,10 +44,10 @@ d_summary_icg <- d_summary %>%
             prop_doses = sum(prop_doses)) %>%
   ungroup() %>%
   mutate(doses_per_pop = round(doses/income_group_size*100,1)) %>%
-  mutate(dap100fvp = round(deaths_averted/doses*100,3),
+  mutate(dap100fvp = round(deaths_averted/doses*100,2),
          deaths_averted_per_m = round(deaths_averted/income_group_size * 1e6),
          total_deaths_averted_per_m = round(sum(deaths_averted)/sum(income_group_size) * 1e6),
-         dap100fvp_total = round(sum(deaths_averted)/sum(doses)*100,3)) %>%
+         dap100fvp_total = round(sum(deaths_averted)/sum(doses)*100,2)) %>%
   mutate(income_group = factor(income_group, levels = c("HIC", "UMIC", "LMIC", "LIC"))) %>%
   arrange(income_group) %>%
   select(income_group, doses, prop_doses, doses_per_pop, deaths_averted_per_m, dap100fvp, total_deaths_averted_per_m, dap100fvp_total)

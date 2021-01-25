@@ -16,8 +16,8 @@ vaccine_period <- 30
 # transmission
 R0 <- 2.5
 # NPIs 2020 and 2021
-Rt1 <- c(1, 1.1)
-Rt2 <- c(1.5, 2)
+Rt1 <- 1.1
+Rt2 <- c(1.5, 2, 2.5)
 reduction1 <- 1-Rt1/R0
 reduction2 <- 1-Rt2/R0
 timing1 <- 120 - t_start
@@ -33,7 +33,7 @@ coverage <- c(0,0.8)
 # Health system constraints
 hs_constraints <- c("Present", "Absent")
 # Efficacy 
-efficacy <- c(0.7, 0.9)
+efficacy <- 0.9
 # Durations of immunity
 duration_R <- 365
 duration_V <- 5000

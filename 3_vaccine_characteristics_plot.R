@@ -1,4 +1,5 @@
 ### Plotting efficacy/coverage outputs
+# Figure 2, Figure S8
 
 ### Load packages ##############################################################
 library(dplyr)
@@ -23,12 +24,13 @@ d <- readRDS("output/3_vacc_characteristics.rds") %>%
 
 # Theoretical herd immunity threshold for imperfect vaccine ####################
 # From  “Herd Immunity”: A Rough Guide (Paul Fine, Ken Eames, David L. Heymann)
-R <- c(2.5, 2)
+R <- c(3.5, 3, 2.5, 2)
 efficacy <- seq(0.5, 1, 0.001)
 pd1 <- expand_grid(efficacy = efficacy, R = R) %>%
   mutate(threshold = (1 - (1 / R)) * (1 / efficacy)) %>%
   filter(threshold <= 1) %>%
-  mutate(label = if_else(R == 2, "Rt2 = 2", "R0 = 2.5"))
+  #mutate(label = if_else(R == 2, "Rt2 = 2", "R0 = 2.5"))
+  mutate(label = paste0("R[t]==", R))
 
 p1 <- ggplot(pd1, aes(x = efficacy * 100, y = threshold * 100, col = label)) +
   geom_line() +
@@ -40,11 +42,11 @@ p1 <- ggplot(pd1, aes(x = efficacy * 100, y = threshold * 100, col = label)) +
         strip.background = element_rect(fill = NA),
         panel.border = element_blank(),
         axis.line = element_line(),
-        legend.text.align = 0,
-        legend.position = "none") +
-  scale_color_viridis_d(option = "C", begin = 0, end = 0.6, name = "") +
-  annotate("text", x = 70, y = 60, label = expression("R[t2]==2"), hjust = 0, parse = T) +
-  annotate("text", x = 65, y = 95, label = expression("R[0]==2.5"), hjust = 0, parse = T)
+        legend.text.align = 0) +
+  scale_color_viridis_d(option = "C", begin = 0, end = 0.6, name = "", labels = function(label) parse(text=label))
+  
+  #annotate("text", x = 70, y = 60, label = expression("R[t2]==2"), hjust = 0, parse = T) +
+  #annotate("text", x = 65, y = 95, label = expression("R[0]==2.5"), hjust = 0, parse = T)
 
 # Coverage and efficacy
 pd2 <- d %>%
@@ -70,7 +72,7 @@ cov_efficacy_plot <- (p1 | p2) + plot_annotation(tag_levels = 'A')
 
 cov_efficacy_plot
 
-ggsave("plots/Fig2.png", cov_efficacy_plot, height = 6, width = 10)
+ggsave("plots/Fig2.png", cov_efficacy_plot, height = 6, width = 12)
 
 ##########################################################
 

@@ -16,7 +16,7 @@ source("R/age_grid_plot_functions.R")
 
 ### Run across all sensitivity analyses ########################################
 
-sr_list <- c("reduce_efficacy", "immunosenescence", "mode_disease", "lower_Rt2", "hs_constraints_absent", "reduce_inf")
+sr_list <- c("reduce_efficacy", "immunosenescence", "mode_disease", "lower_Rt2", "hs_constraints_absent", "reduce_inf", "higher_Rt2")
 
 for (sr in sr_list){
 
@@ -30,6 +30,7 @@ if (sr == "mode_disease"){sensitivity_run_text = "Disease-blocking vaccine"}
 if (sr == "lower_Rt2"){sensitivity_run_text = "Higher level of continued NPIs"}
 if (sr == "hs_constraints_absent"){sensitivity_run_text = "Health system constraints absent"}
 if (sr == "reduce_inf"){sensitivity_run_text = "Reduced infectiousness < 10 years"}
+if (sr == "higher_Rt2"){sensitivity_run_text = "Lower level of continued NPIs"}
 
 ### Plotting params ############################################################
 

@@ -12,9 +12,6 @@ library(readr)
 source("R/functions.R")
 source("R/functions_optim.R")
 
-### Specify parameter set #######################################################
-sr <- "reduce_inf"
-
 ### Specify runs ###############################################################
 
 # Scenario table
@@ -30,8 +27,10 @@ scenarios5 <- create_params_list(hs_constraints = "Absent") %>%
   mutate(sensitivity_run = "hs_constraints_absent")
 scenarios6 <- create_params_list(reduce_inf = 0.5) %>%
   mutate(sensitivity_run = "reduce_inf")
+scenarios7 <- create_params_list(Rt2 = 2.5) %>%
+  mutate(sensitivity_run = "higher_Rt2")
 
-scenarios <- rbind(scenarios1, scenarios2, scenarios3, scenarios4, scenarios5, scenarios6)
+scenarios <- rbind(scenarios1, scenarios2, scenarios3, scenarios4, scenarios5, scenarios6, scenarios7)
 
 # number the runs
 scenarios$run_number <- 1:nrow(scenarios)
@@ -41,31 +40,16 @@ scenarios$directory_out <- "sensitivity"
 
 nrow(scenarios)
 
-write_csv(scenarios, "cluster_outputs_sensitivity/scenarios.csv")
+write_csv(scenarios, "output_sensitivity/scenarios.csv")
  
-################################################################################
-# sources <- c("R/functions.R", "R/functions_cluster_sensitivity.R")
-# ctx <- context::context_save(path = "context",
-#                              sources = sources,
-#                              packages = c("dde", "odin", "odin.js", "squire", "nimue", "dplyr", "purrr"),
-#                              package_sources = provisionr::package_sources(local = c("packages/dde_1.0.2.zip",
-#                                                                                      "packages/odin_1.0.6.zip",
-#                                                                                      "packages/odin.js_0.1.8.zip",
-#                                                                                      "packages/squire_0.4.34.zip",
-#                                                                                      "packages/nimue_0.1.7.zip")))
-# 
-# config <- didehpc::didehpc_config(use_workers=FALSE, cluster="fi--didemrchnb")
-# run <- didehpc::queue_didehpc(ctx, config = config)
-# 
-# run$cluster_load(nodes = FALSE)
-# 
-# t1 <- run$enqueue_bulk(select(scenarios1, -sensitivity_run), run_scenario_cluster, do_call=TRUE, name='run_scenario', overwrite=TRUE)
+#### Run the model #####################################################
 
-#### Run the model - not on the cluster #########################################
+# Complete the runs in batches
+sr <- "higher_Rt2"
 
 scenarios_sub <- filter(scenarios, sensitivity_run == sr)
 plan(multiprocess, workers = 6)
 
 system.time({out <- future_pmap(select(scenarios_sub, -directory_out, -sensitivity_run), run_scenario_basic, .progress = TRUE)})
 
-write_csv(bind_rows(out), paste0("cluster_outputs_sensitivity/AGGREGATOR_", sr, ".csv"))
+write_csv(bind_rows(out), paste0("output_sensitivity/AGGREGATOR_", sr, ".csv"))

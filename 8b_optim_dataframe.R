@@ -8,13 +8,12 @@ library(readr)
 library(stringr)
 
 ### Load outputs ###############################################################
-raw <- read_csv("cluster_outputs_default/AGGREGATOR.csv")
-scenarios <- read_csv("cluster_outputs_default/scenarios.csv")
+raw <- read_csv("output_default/AGGREGATOR.csv")
+scenarios <- read_csv("output_default/scenarios.csv")
 d <- left_join(raw, scenarios) %>%
   select(-run_number, -directory_out, -vaccine_n)
 
 d_cf <- filter(d, age_target == "0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0") %>%
-  #select(-coverage, -age_target, -vaccine_n) %>%
   select(-coverage, -age_target) %>%
   rename("deaths_cf" = "deaths",
          "life_years_lost_cf" = "life_years_lost")
@@ -57,8 +56,8 @@ write_csv(d_main_income_region, "optim_dataframes/optim_dataframe_income_fine.cs
 
 ################################################################################
 # read in the immunosenescence runs
-raw_imm <- read_csv("cluster_outputs_default_immunosenescence/AGGREGATOR.csv")
-scenarios_imm <- read_csv("cluster_outputs_default_immunosenescence/scenarios.csv")
+raw_imm <- read_csv("output_default_immunosenescence/AGGREGATOR.csv")
+scenarios_imm <- read_csv("output_default_immunosenescence/scenarios.csv")
 d_imm <- left_join(raw_imm, scenarios_imm) %>%
   select(-run_number, -directory_out)
 
@@ -79,7 +78,6 @@ d_main_income_region_imm <- y %>%
   left_join(d_imm, by = c("income_group", "age_target")) %>%
   mutate(deaths_averted_2021 = round(deaths_averted_2021 / 50e6 * pop_2019),
          vaccine_n_2021 = pop_2019 * proportion/100 * coverage,
-         #vaccine_n_2021 = round(vaccine_n / 50e6 * pop_2019),
          dapd_2021 = deaths_averted_2021 / vaccine_n_2021,
          additional_life_years_2021 = additional_life_years_2021 / 50e6 * pop_2019
   )

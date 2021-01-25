@@ -1,5 +1,6 @@
 ##################################################################################
 # illustrate impact of longer vaccine roll-out, for varying Rt2
+# Figure S9
 
 cols3 <- c("#8c2d04", "#fe9929", "#fed976")
 
@@ -69,12 +70,12 @@ g1_plot_col <- function(dat = dat, Rt2_val = Rt2_val){
 }
 ##################################################################################
 
-p1 <- g1_plot_line(dat = pd9, dat_cf = pd9_cf, Rt2_val = 1.3)
-p2 <- g1_plot_line(dat = pd9, dat_cf = pd9_cf, Rt2_val = 1.5)
-p3 <- g1_plot_line(dat = pd9, dat_cf = pd9_cf, Rt2_val = 2.0)
-p4 <- g1_plot_col(dat = pd10, Rt2_val = 1.3)
-p5 <- g1_plot_col(dat = pd10, Rt2_val = 1.5)
-p6 <- g1_plot_col(dat = pd10, Rt2_val = 2.0)
+p1 <- g1_plot_line(dat = pd9, dat_cf = pd9_cf, Rt2_val = 1.5)
+p2 <- g1_plot_line(dat = pd9, dat_cf = pd9_cf, Rt2_val = 2.0)
+p3 <- g1_plot_line(dat = pd9, dat_cf = pd9_cf, Rt2_val = 2.5)
+p4 <- g1_plot_col(dat = pd10, Rt2_val = 1.5)
+p5 <- g1_plot_col(dat = pd10, Rt2_val = 2.0)
+p6 <- g1_plot_col(dat = pd10, Rt2_val = 2.5)
 
 ##################################################################################
 # combine plots

@@ -1,12 +1,14 @@
 # Plot the counterfactual (baseline) epidemic trajectories
+# Figure S5, Figure S6, Figure 1
 
-# Load packages
+### Load packages ##############################################################
 library(dplyr)
 library(ggplot2)
 library(patchwork)
 library(purrr)
 library(tidyr)
 
+################################################################################
 # Plotting stuff
 Rt1_labs <- c('R[t1]=0.7', 'R[t1]=0.9', 'R[t1]=1.1')
 names(Rt1_labs) <- c(0.7, 0.9, 1.1)
@@ -37,7 +39,7 @@ pd <- counter_out %>%
   mutate(height = max(value, na.rm = TRUE)*0.9)
 
 #################################################################
-# Plot trajectories assuming Inf immunity, HIC income setting
+# Plot trajectories for varying levels of transmission, HIC income setting (Figure S6)
 
 pd1 <- pd %>% 
   filter((duration_R == 365),
@@ -71,7 +73,7 @@ g1
 ggsave("plots/FigS6.png", g1, height = 4.5, width = 8.5)
 
 #################################################################
-# Single trajectory plots with and without waning natural immunity
+# Single trajectory plot, with waning natural immunity
 
 #duration_R_labs <- c("1 year immunity", "Long immunity")
 duration_R_labs <- c("", "")
@@ -80,8 +82,8 @@ names(duration_R_labs) <- c(365, Inf)
 pd3 <- pd %>% 
   filter(R0 == 2.5,
          Rt1 == 1.1,
-         income_group == "HIC") %>%
-  mutate(duration_R = factor(duration_R, levels = c(365, Inf)))
+         income_group == "HIC",
+         duration_R == 365)
 
 pd3a <- filter(pd3, Rt2 == 2, t<366, is.na(value) == F)
 pd3b <- filter(pd3, t >= 366, t<1035, is.na(value) == F)
@@ -111,15 +113,11 @@ plotfunc_counterfactual <- function(pd3, pd3a, pd3b, dur_R){
 }
 
 g3a <- plotfunc_counterfactual(pd3, pd3a, pd3b, dur_R = 365)
-g3b <- plotfunc_counterfactual(pd3, pd3a, pd3b, dur_R = Inf)
 
-fig1plot <- (g3a | g3b) + plot_annotation(tag_levels = 'A') + plot_layout(guide = "collect", ncol = 2, nrow = 1)
-fig1plot
-
-ggsave("plots/Fig1.png", fig1plot, height = 4, width = 8.5)
+ggsave("plots/Fig1.png", g3a, height = 4, width = 4.5)
 
 #################################################################
-# Single trajectory plots with and without waning natural immunity, for the other 3 income settings
+# Single trajectory plots with and without waning natural immunity, for all income settings
 
 duration_R_labs <- c("1 year immunity", "Long immunity")
 names(duration_R_labs) <- c(365, Inf)
@@ -127,8 +125,7 @@ pd4 <- pd %>%
   mutate(duration_R = factor(duration_R, levels = c(365, Inf)),
          income_group = factor(income_group, levels = c("HIC","UMIC", "LMIC", "LIC"))) %>%
   filter(R0 == 2.5,
-         Rt1 == 1.1,
-         income_group != "HIC")
+         Rt1 == 1.1)
 
 
 pd4a <- filter(pd4, Rt2 == 2, t<366, is.na(value) == F)
@@ -141,7 +138,7 @@ g4 <- ggplot() +
   geom_line(data = pd4b, aes(x = t, y = (value/50e6*1e6), col = Rt2)) +
   labs(x = "Time", y = "Deaths per million per day", color=expression(paste("R"[t2]))) +
   theme_bw() +
-  facet_wrap(income_group~duration_R, labeller = labeller(duration_R = duration_R_labs, .multi_line = F), nrow = 3) +
+  facet_wrap(income_group~duration_R, labeller = labeller(duration_R = duration_R_labs, .multi_line = F), nrow = 4) +
   scale_x_continuous(breaks = c(183,366,549,732,914), labels = c("Jul '20", "Jan '21", "Jul '21", "Jan '22", "Jul '22")) +
   geom_text(data=pd4,
             aes(x=650,
@@ -158,4 +155,4 @@ g4 <- ggplot() +
 
 g4
 
-ggsave("plots/FigS5.png", g4, height = 9, width = 7)
+ggsave("plots/FigS5.png", g4, height = 9, width = 6)

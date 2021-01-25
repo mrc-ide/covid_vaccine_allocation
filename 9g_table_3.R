@@ -23,14 +23,16 @@ df4 <- read_csv("tables/optimal_strategy_between_country_icg_mode_disease.csv") 
   mutate(strategy = "mode_disease")
 df5 <- read_csv("tables/optimal_strategy_between_country_icg_lower_Rt2.csv") %>%
   mutate(strategy = "lower_Rt2")
-df6 <- read_csv("tables/optimal_strategy_between_country_icg_hs_constraints_absent.csv") %>%
+df6 <- read_csv("tables/optimal_strategy_between_country_icg_higher_Rt2.csv") %>%
+  mutate(strategy = "higher_Rt2")
+df7 <- read_csv("tables/optimal_strategy_between_country_icg_hs_constraints_absent.csv") %>%
   mutate(strategy = "hs_constraints_absent")
-df7 <- read_csv("tables/optimal_strategy_between_country_icg_reduce_inf.csv") %>%
+df8 <- read_csv("tables/optimal_strategy_between_country_icg_reduce_inf.csv") %>%
   mutate(strategy = "reduce_inf")
-df8 <- read_csv("tables/optimal_strategy_between_country_icg_life_years.csv") %>%
+df9 <- read_csv("tables/optimal_strategy_between_country_icg_life_years.csv") %>%
   mutate(strategy = "life_years")
 
-df_all <- rbind(df1, df2, df3, df4, df5, df6, df7, df8)
+df_all <- rbind(df1, df2, df3, df4, df5, df6, df7, df8, df9)
 
 tab_S4 <- df_all %>%
   select(-doses_per_pop, -prop_doses, -doses)

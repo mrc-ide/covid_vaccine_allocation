@@ -81,30 +81,10 @@ scenarios$directory_out <- sensitivity_run
 
 nrow(scenarios)
 
-write_csv(scenarios, paste0("cluster_outputs_", sensitivity_run, "/scenarios.csv"))
+write_csv(scenarios, paste0("output_", sensitivity_run, "/scenarios.csv"))
 
-#### Run the model - on the cluster ##############################################
-# sources <- c("R/functions.R")
-# ctx <- context::context_save(path = "context",
-#                              sources = sources,
-#                              packages = c("dde", "odin", "odin.js", "squire", "nimue", "dplyr", "purrr"),
-#                              package_sources = provisionr::package_sources(local = c("packages/dde_1.0.2.zip",
-#                                                                                      "packages/odin_1.0.6.zip",
-#                                                                                      "packages/odin.js_0.1.8.zip",
-#                                                                                      "packages/squire_0.4.34.zip",
-#                                                                                      "packages/nimue_0.1.7.zip")))
-# 
-# config <- didehpc::didehpc_config(use_workers=FALSE, cluster="fi--didemrchnb")
-# run <- didehpc::queue_didehpc(ctx, config = config)
-# 
-# run$cluster_load(nodes = FALSE)
-# 
-# t1 <- run$enqueue_bulk(scenarios, run_scenario_cluster, do_call=TRUE, name='run_scenario', overwrite=TRUE)
-
-#### Run the model - not on the cluster #########################################
+#### Run the model #########################################
 plan(multiprocess, workers = 6)
 system.time({out <- future_pmap(select(scenarios, -directory_out), run_scenario_basic, .progress = TRUE)})
 
-write_csv(bind_rows(out), "cluster_outputs_default/AGGREGATOR.csv")
-
-################################################################################
+write_csv(bind_rows(out), "output_default/AGGREGATOR.csv")

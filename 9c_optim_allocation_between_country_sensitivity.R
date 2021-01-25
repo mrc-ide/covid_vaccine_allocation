@@ -11,7 +11,7 @@ source("R/functions_optim.R")
 #######################################################################
 # User-defined inputs
 
-sr_list <- c("reduce_efficacy", "immunosenescence", "mode_disease", "lower_Rt2", "hs_constraints_absent", "reduce_inf")
+sr_list <- c("reduce_efficacy", "immunosenescence", "mode_disease", "lower_Rt2", "hs_constraints_absent", "reduce_inf", "higher_Rt2")
 
 for (sr in sr_list){
 
@@ -33,7 +33,7 @@ partition_size <- read_csv("data/country_pop_income.csv") %>%
   select(-cs, -prop)
 
 income_group <- c("HIC", "UMIC", "LMIC", "LIC")
-age_target <- unique(d_sub$age_target)
+age_target <- unique(d_main$age_target)
 
 p <- expand_grid(income_group, age_target) %>%
   left_join(partition_size) %>%

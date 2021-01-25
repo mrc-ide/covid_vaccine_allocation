@@ -1,4 +1,4 @@
-### Figure 3 runs ##############################################################
+### Figure S9 runs ##############################################################
 
 ### Load packages ##############################################################
 # devtools::install_github("mrc-ide/nimue@develop", force = TRUE)
@@ -19,7 +19,7 @@ vaccine_period <- 30
 R0 <- 2.5
 # NPIs 2020 and 2021
 Rt1 <- 1.1
-Rt2 <- c(1.1, 1.3, 1.5, 2)
+Rt2 <- c(1.1, 1.3, 1.5, 2, 2.5)
 timing1 <- 120 - t_start
 timing2 <- 366 - t_start + vaccine_period + 21
 # Vaccine coverage

@@ -13,7 +13,7 @@ library(coop)
 
 ################################################################################
 
-sr_list <- c("reduce_efficacy", "immunosenescence", "mode_disease", "lower_Rt2", "hs_constraints_absent", "reduce_inf")
+sr_list <- c("reduce_efficacy", "immunosenescence", "mode_disease", "lower_Rt2", "hs_constraints_absent", "reduce_inf", "higher_Rt2")
 
 for (sr in sr_list){
 

@@ -81,10 +81,10 @@ scenarios$directory_out <- "default_immunosenescence"
 
 nrow(scenarios)
 
-write_csv(scenarios, paste0("cluster_outputs_", sensitivity_run, "/scenarios.csv"))
+write_csv(scenarios, paste0("output_", sensitivity_run, "/scenarios.csv"))
 
 #### Run the model - not on the cluster #########################################
 plan(multiprocess, workers = 6)
 system.time({out <- future_pmap(select(scenarios, -directory_out), run_scenario_basic, .progress = TRUE)})
 
-write_csv(bind_rows(out), paste0("cluster_outputs_", sensitivity_run,"/AGGREGATOR.csv"))
+write_csv(bind_rows(out), paste0("output_", sensitivity_run,"/AGGREGATOR.csv"))
