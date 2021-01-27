@@ -262,6 +262,9 @@ g6 <- plotfunc(pd5, "Life-years gained")
 
 g5
 g6
+
+pd5$value_per_1000 <- pd5$value/50e6*1e3
+
 ##################################################################################
 # combine plots
 
