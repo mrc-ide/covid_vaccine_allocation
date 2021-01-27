@@ -10,11 +10,15 @@ library(tidyr)
 
 ################################################################################
 # Plotting stuff
-Rt1_labs <- c('R[t1]=0.7', 'R[t1]=0.9', 'R[t1]=1.1')
-names(Rt1_labs) <- c(0.7, 0.9, 1.1)
+Rt1_labs <- c('R[t1]=0.9', 'R[t1]=1.1', 'R[t1]=1.3')
+names(Rt1_labs) <- c(0.9, 1.1, 1.3)
 
 R0_labs <- c('R[0]=2.5', 'R[0]=3.0')
 names(R0_labs) <- c(2.5, 3.0)
+
+lightgreen <- "#bbdf27"
+teal <- "#25848e"
+darkpurple <- "#440154"
 
 # Load outputs
 counter_out <- readRDS("output/1_counter.rds") %>%
@@ -57,7 +61,7 @@ g1 <- ggplot() +
   theme_bw() +
   facet_wrap(R0_labs~Rt1_labs, labeller = labeller(.cols = label_parsed, .multi_line = FALSE), nrow = 2) +
   scale_x_continuous(breaks = c(183,366,549,732,914), labels = c("Jul '20", "Jan '21", "Jul '21", "Jan '22", "Jul '22")) +
-  scale_color_viridis_d(option = "D", begin = 0, end = 0.9, direction = -1) +
+scale_color_manual(values = c(lightgreen, darkpurple, teal))+
   geom_text(data=pd1,
             aes(x=100,
                 y=70,
@@ -97,20 +101,14 @@ plotfunc_counterfactual <- function(pd3, pd3a, pd3b, dur_R){
     labs(x = "Time", y = "Deaths per million per day", color=expression(paste("R"[t2]))) +
     theme_bw() +
     scale_x_continuous(breaks = c(183,366,549,732,914), labels = c("Jul '20", "Jan '21", "Jul '21", "Jan '22", "Jul '22")) +
-    scale_y_continuous(limits = c(0,70)) +
-    # geom_text(data=filter(pd3, duration_R == dur_R),
-    #           aes(x=600,
-    #               y=65,
-    #               label=paste0("proportion in\nR = ", paste0(round(prop_R,2)*100, "%"))),
-    #           color="darkgray",
-    #           size=3, hjust = 0) +
+    scale_y_continuous(limits = c(0,120)) +
     annotate("text", x = 90 + 80, y = 65, label = "t[1]", hjust = 0, parse = T) +
     annotate("text", x = 300, y = 55, label = "t[2]", hjust = 0, parse = T) +
     theme(strip.background = element_rect(colour = NA, fill = NA),
           panel.border = element_blank(),
           axis.line = element_line()) +
-    scale_color_viridis_d(option = "D", begin = 0, end = 0.9, direction = -1)
-}
+    scale_color_manual(values = c(lightgreen, darkpurple, teal))
+  }
 
 g3a <- plotfunc_counterfactual(pd3, pd3a, pd3b, dur_R = 365)
 
@@ -151,8 +149,7 @@ g4 <- ggplot() +
   theme(strip.background = element_rect(colour = NA, fill = NA),
         panel.border = element_blank(),
         axis.line = element_line()) +
-  scale_color_viridis_d(option = "D", begin = 0, end = 0.9, direction = -1)
-
+  scale_color_manual(values = c(lightgreen, darkpurple, teal))
 g4
 
 ggsave("plots/FigS5.png", g4, height = 9, width = 6)

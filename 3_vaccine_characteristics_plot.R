@@ -24,7 +24,7 @@ d <- readRDS("output/3_vacc_characteristics.rds") %>%
 
 # Theoretical herd immunity threshold for imperfect vaccine ####################
 # From  “Herd Immunity”: A Rough Guide (Paul Fine, Ken Eames, David L. Heymann)
-R <- c(3.5, 3, 2.5, 2)
+R <- c(4, 3.5, 3, 2.5, 2, 1.5)
 efficacy <- seq(0.5, 1, 0.001)
 pd1 <- expand_grid(efficacy = efficacy, R = R) %>%
   mutate(threshold = (1 - (1 / R)) * (1 / efficacy)) %>%
@@ -44,10 +44,9 @@ p1 <- ggplot(pd1, aes(x = efficacy * 100, y = threshold * 100, col = label)) +
         axis.line = element_line(),
         legend.text.align = 0) +
   scale_color_viridis_d(option = "C", begin = 0, end = 0.6, name = "", labels = function(label) parse(text=label))
+ 
+p1 
   
-  #annotate("text", x = 70, y = 60, label = expression("R[t2]==2"), hjust = 0, parse = T) +
-  #annotate("text", x = 65, y = 95, label = expression("R[0]==2.5"), hjust = 0, parse = T)
-
 # Coverage and efficacy
 pd2 <- d %>%
   filter(income_group == "HIC",
@@ -74,6 +73,10 @@ cov_efficacy_plot
 
 ggsave("plots/Fig2.png", cov_efficacy_plot, height = 6, width = 12)
 
+# calculate % deaths averted
+prop_averted <- pd2 %>%
+  filter(efficacy == 90,
+         coverage >= 0.7)
 ##########################################################
 
 # Repeat the coverage/efficacy/mode plot for all income settings
@@ -98,4 +101,4 @@ p3 <- ggplot(pd3, aes(x = coverage * 100, y = deaths_averted_2021 / 50e6 * 1e3, 
 
 p3
 
-ggsave("plots/FigS8.png", p3, height = 6, width = 10)
+ggsave("plots/FigS7.png", p3, height = 6, width = 10)

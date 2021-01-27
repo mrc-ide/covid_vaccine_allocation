@@ -19,7 +19,7 @@ vaccine_period <- 30
 R0 <- c(2.5, 3.0)
 # NPIs 2020 and 2021
 Rt1 <- c(0.9, 1.1)
-Rt2 <- c(1.3, 1.5, 2)
+Rt2 <- c(1.5, 2, 2.5)
 timing1 <- 120 - t_start
 timing2 <- 366 - t_start + vaccine_period + 21
 # Vaccine coverage
@@ -35,7 +35,7 @@ age_target <- "1_1_1_1_1_1_1_1_1_1_1_1_1_1_1_1_1"
 # Income group
 income_group <- c("HIC")
 # Durations of immunity
-duration_R <- 365 #c(183, 365, Inf)
+duration_R <- 365
 duration_V <- 5000
 dur_vacc_delay <- 7
 # Vaccine start time

@@ -1,5 +1,5 @@
 ### Plotting efficacy/coverage outputs
-# Figure 2, Figure S8
+# Figure 2, Figure S7
 
 ### Load packages ##############################################################
 library(dplyr)
