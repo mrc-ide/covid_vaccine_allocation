@@ -33,7 +33,7 @@ pd10 <- readRDS("output/4_gradual_rollout.rds") %>%
          Rt1 == 1.1,
          vaccine_period == 365,
          efficacy == 0.9) %>%
-  mutate(deaths_averted = (deaths_averted_2021)/50e6*1000)
+  mutate(deaths_averted = (deaths_averted_2021 + deaths_averted_2022)/50e6*1000)
 
 ##################################################################################
 g1_plot_line <- function(dat = dat, dat_cf = dat_cf, Rt2_val = Rt2_val){

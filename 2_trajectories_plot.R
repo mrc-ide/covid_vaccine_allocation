@@ -1,4 +1,4 @@
-# Figure S7
+# Figure S8
 
 # Load packages
 library(dplyr)
@@ -91,6 +91,6 @@ p2 <- ggplot() +
 
 p2
 
-ggsave("plots/FigS7.png", p2, height = 4, width = 11)
+ggsave("plots/FigS8.png", p2, height = 4, width = 11)
 
 

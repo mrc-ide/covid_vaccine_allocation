@@ -17,6 +17,10 @@ cols1 <- c("#08519c", "#440154ff", "#9ecae1")
 cols2 <- c( "#993366","#440154ff", "#e6b3cc")
 cols3 <- c("#8c2d04", "#fe9929", "#fed976")
 
+lightgreen <- "#bbdf27"
+teal <- "#25848e"
+darkpurple <- "#440154"
+
 # Load outputs #################################################################
 df_main <- readRDS("output/4_epidemic_characteristics.rds") %>%
   filter(hs_constraints == "Present") %>%
@@ -103,7 +107,7 @@ pd3 <- df_counter %>%
   mutate(R0 = factor(R0),
          Rt1 = factor(Rt1),
          Rt2 = factor(Rt2)) %>%
-  filter((R0 == 2.5 & Rt1 == 1.1 & Rt2 == 1.3) | (R0 == 2.5 & Rt1 == 1.1 & Rt2 == 1.5) | (R0 == 2.5 & Rt1 == 1.1 & Rt2 == 2))
+  filter((R0 == 2.5 & Rt1 == 1.1 & Rt2 == 1.5) | (R0 == 2.5 & Rt1 == 1.1 & Rt2 == 2.0) | (R0 == 2.5 & Rt1 == 1.1 & Rt2 == 2.5))
 
 pd3a <- filter(pd3, t < vaccine_start + 30)
 pd3b <- filter(pd3, t >= vaccine_start + 30)
@@ -120,8 +124,8 @@ g3 <-ggplot() +
         panel.border = element_blank(),
         axis.line = element_line(),
         legend.text.align = 0) +
-  scale_color_viridis_d(option = "D", begin = 0, end = 0.9, direction = -1, labels = function(R_labs) parse(text=R_labs)) +
- # scale_color_manual(values = cols2, labels = function(R_labs) parse(text=R_labs)) +
+  #scale_color_viridis_d(option = "D", begin = 0, end = 0.9, direction = -1, labels = function(R_labs) parse(text=R_labs)) +
+ scale_color_manual(values = c(lightgreen, darkpurple, teal), labels = function(R_labs) parse(text=R_labs)) +
   scale_linetype_manual(values = c("dashed", "dotted"))
 
 g3
@@ -134,15 +138,15 @@ pd4 <- df_main %>%
   mutate(R0 = factor(R0),
          Rt1 = factor(Rt1),
          Rt2 = factor(Rt2)) %>%
-  filter((R0 == 2.5 & Rt1 == 1.1 & Rt2 == 1.3) | (R0 == 2.5 & Rt1 == 1.1 & Rt2 == 1.5) | (R0 == 2.5 & Rt1 == 1.1 & Rt2 == 2)) %>%
+  filter((R0 == 2.5 & Rt1 == 1.1 & Rt2 == 1.5) | (R0 == 2.5 & Rt1 == 1.1 & Rt2 == 2) | (R0 == 2.5 & Rt1 == 1.1 & Rt2 == 2.5)) %>%
   select(R_labs, deaths_averted_2021, deaths_averted_2022) %>%
-  mutate(deaths_averted = (deaths_averted_2021)/50e6*1000)
+  mutate(deaths_averted = (deaths_averted_2021 + deaths_averted_2022)/50e6*1000)
 
 g4 <- ggplot(data = pd4, aes(x = R_labs, y = deaths_averted , fill = R_labs)) +
-  geom_col() +
+  geom_col(alpha = 0.8) +
   theme_bw() +
-  scale_fill_viridis_d(option = "D", begin = 0, end = 0.9, direction = -1, labels = function(R_labs) parse(text=R_labs), alpha = 0.8) +
-  scale_x_discrete(labels = c("1.3", "1.5", "2.0")) +
+  scale_fill_manual(values = c(lightgreen, darkpurple, teal), labels = function(R_labs) parse(text=R_labs)) +
+  scale_x_discrete(labels = c("1.5", "2.0", "2.5")) +
   labs(x = expression(paste("R"[t2])), y = "Deaths averted per thousand", fill = "", parse = T) +
   theme(strip.background = element_rect(fill = NA),
         panel.border = element_blank(),
@@ -201,7 +205,7 @@ pd10 <- readRDS("output/4_gradual_rollout.rds") %>%
          Rt2 == 2,
          vaccine_period == 365,
          efficacy == 0.9) %>%
-  mutate(deaths_averted = (deaths_averted_2021)/50e6*1000)
+  mutate(deaths_averted = (deaths_averted_2021 + deaths_averted_2022)/50e6*1000)
 
 
 g10 <- ggplot(data = pd10, aes(x = factor(vaccine_coverage_mat), y = deaths_averted , fill = factor(vaccine_coverage_mat))) +
@@ -219,7 +223,7 @@ g10 <- ggplot(data = pd10, aes(x = factor(vaccine_coverage_mat), y = deaths_aver
 g10
 
 ##################################################################################
-# 70% vaccine efficacy, 80% coverage, 4 income settings
+# 90% vaccine efficacy, 80% coverage, 4 income settings
 # show life years saved and deaths averted as bar chart
 
 # plotting function
@@ -258,6 +262,9 @@ g6 <- plotfunc(pd5, "Life-years gained")
 
 g5
 g6
+
+pd5$value_per_1000 <- pd5$value/50e6*1e3
+
 ##################################################################################
 # combine plots
 

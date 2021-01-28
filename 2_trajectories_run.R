@@ -1,4 +1,4 @@
-# Figure S7
+# Figure S8
 
 ### Load packages ##############################################################
 library(dplyr)
