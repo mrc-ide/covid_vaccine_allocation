@@ -26,10 +26,34 @@ d_out_all <- read_csv("optim_dataframes/optim_dataframe_income_fine.csv") %>%
 #### Optimal solution frontier #################################################
 
 # Subset for non-dominated solution = the frontier - this is done for each income group
-d_out_HIC <- front(filter(d_out_all, income_group == "HIC"))
-d_out_UMIC <- front(filter(d_out_all, income_group == "UMIC"))
-d_out_LMIC <- front(filter(d_out_all, income_group == "LMIC"))
-d_out_LIC <- front(filter(d_out_all, income_group == "LIC"))
+# Keep frontier up to the maximum deaths averted; beyond that level of supply keep everything
+sub_HIC <- filter(d_out_all, income_group == "HIC")
+threshold_HIC <- sub_HIC[which(sub_HIC$deaths_averted_2021 == max(sub_HIC$deaths_averted_2021)),]$relative_constraint
+
+d_out_HIC <- rbind(
+  front(sub_HIC),
+  filter(sub_HIC, relative_constraint >= threshold_HIC, deaths_averted_2021 >= 0.9999 * max(sub_HIC$deaths_averted_2021)))
+
+sub_UMIC <- filter(d_out_all, income_group == "UMIC")
+threshold_UMIC <- sub_UMIC[which(sub_UMIC$deaths_averted_2021 == max(sub_UMIC$deaths_averted_2021)),]$relative_constraint
+
+d_out_UMIC <- rbind(
+  front(sub_UMIC),
+  filter(sub_UMIC, relative_constraint >= threshold_UMIC, deaths_averted_2021 >= 0.9999 * max(sub_UMIC$deaths_averted_2021)))
+
+sub_LMIC <- filter(d_out_all, income_group == "LMIC")
+threshold_LMIC <- sub_LMIC[which(sub_LMIC$deaths_averted_2021 == max(sub_LMIC$deaths_averted_2021)),]$relative_constraint
+
+d_out_LMIC <- rbind(
+  front(sub_LMIC),
+  filter(sub_LMIC, relative_constraint >= threshold_LMIC, deaths_averted_2021 >= 0.9999 * max(sub_LMIC$deaths_averted_2021)))
+
+sub_LIC <- filter(d_out_all, income_group == "LIC")
+threshold_LIC <- sub_LIC[which(sub_LIC$deaths_averted_2021 == max(sub_LIC$deaths_averted_2021)),]$relative_constraint
+
+d_out_LIC <- rbind(
+  front(sub_LIC),
+  filter(sub_LIC, relative_constraint >= threshold_LIC, deaths_averted_2021 >= 0.9999 * max(sub_LIC$deaths_averted_2021)))
 
 d_out <- rbind(d_out_HIC, d_out_UMIC, d_out_LMIC, d_out_LIC)
 
@@ -37,7 +61,7 @@ d_out <- rbind(d_out_HIC, d_out_UMIC, d_out_LMIC, d_out_LIC)
 
 # target older first
 age_target <- read_csv("data/age_target_strategy_old.csv")$age_target
-income_group <- unique(d$income_group)
+income_group <- unique(d_out$income_group)
 params <- crossing(income_group, age_target)
 out_older_first <- left_join(params, d_out_all) %>%
   mutate(relative_constraint = vaccine_n_2021 / pop_2019 * 100) %>%
@@ -45,7 +69,6 @@ out_older_first <- left_join(params, d_out_all) %>%
 
 # non-optim within-country strategy: target working age first
 age_target <- read_csv("data/age_target_strategy_working.csv")$age_target
-income_group <- unique(d$income_group)
 params <- crossing(income_group, age_target)
 out_working_first <- left_join(params, d_out_all) %>%
   mutate(relative_constraint = vaccine_n_2021 / pop_2019 * 100) %>%

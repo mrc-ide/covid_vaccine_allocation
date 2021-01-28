@@ -9,7 +9,6 @@ library(stringr)
 library(data.table)
 library(patchwork)
 library(ggplot2)
-library(coop)
 
 ################################################################################
 
@@ -64,7 +63,7 @@ d_out <- rbind(d_out_HIC, d_out_UMIC, d_out_LMIC, d_out_LIC)
 
 # target older first
 age_target <- read_csv("data/age_target_strategy_old.csv")$age_target
-income_group <- unique(d$income_group)
+income_group <- unique(d_out$income_group)
 params <- crossing(income_group, age_target)
 out_older_first <- left_join(params, d_out_all) %>%
   mutate(relative_constraint = vaccine_n_2021 / pop_2019 * 100) %>%
@@ -72,7 +71,6 @@ out_older_first <- left_join(params, d_out_all) %>%
 
 # non-optim within-country strategy: target working age first
 age_target <- read_csv("data/age_target_strategy_working.csv")$age_target
-income_group <- unique(d$income_group)
 params <- crossing(income_group, age_target)
 out_working_first <- left_join(params, d_out_all) %>%
   mutate(relative_constraint = vaccine_n_2021 / pop_2019 * 100) %>%
