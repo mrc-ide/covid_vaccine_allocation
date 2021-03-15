@@ -30,6 +30,13 @@ set_efficacy <- function(mode, efficacy, immunosenescence){
     out$vaccine_efficacy_disease[14:17] <- out$vaccine_efficacy_disease[14:17] * immunosenescence
   }
   
+  if(mode == "Combined"){
+    out <- list(
+      vaccine_efficacy_infection = ef,
+      vaccine_efficacy_disease = rep(0.6, 17))
+    out$vaccine_efficacy_infection[14:17] <- out$vaccine_efficacy_infection[14:17] * immunosenescence
+  }
+  
   return(out)
 }
 

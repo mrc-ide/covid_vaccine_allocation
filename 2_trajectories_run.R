@@ -28,10 +28,10 @@ timing2 <- 366 - t_start + vaccine_period + 21
 # Vaccine coverage
 coverage <- c(0,0.8)
 # Mode of action
-mode <- c("Infection")
+mode <- c("Combined")
 # Health system constraints{}
 hs_constraints <- c("Present")
-# Efficacy 
+# Efficacy
 efficacy <- 0.9
 # Age targeting
 age_target <- "1_1_1_1_1_1_1_1_1_1_1_1_1_1_1_1_1"
