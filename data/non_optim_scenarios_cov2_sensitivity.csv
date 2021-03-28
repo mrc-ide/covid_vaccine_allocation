@@ -1,9 +1,9 @@
 sensitivity_run,efficacy,reduction2,mode,hs_constraints,immunosenescence,reduce_inf,t_start,timing1,timing2,reduction1,vaccine_start,seeding_cases,duration_R,duration_V,R0
-default,0.9,0.2,Infection,Present,1,1,60,60,336,0.56,306,60,365,5000,2.5
-reduce_efficacy,0.7,0.2,Infection,Present,1,1,60,60,336,0.56,306,60,365,5000,2.5
-immunosenescence,0.9,0.2,Infection,Present,0.5,1,60,60,336,0.56,306,60,365,5000,2.5
+default,0.9,0.2,Combined,Present,1,1,60,60,336,0.56,306,60,365,5000,2.5
+reduce_efficacy,0.7,0.2,Combined,Present,1,1,60,60,336,0.56,306,60,365,5000,2.5
+immunosenescence,0.9,0.2,Combined,Present,0.5,1,60,60,336,0.56,306,60,365,5000,2.5
 mode_disease,0.9,0.2,Disease,Present,1,1,60,60,336,0.56,306,60,365,5000,2.5
-lower_Rt2,0.9,0.4,Infection,Present,1,1,60,60,336,0.56,306,60,365,5000,2.5
-higher_Rt2,0.9,0,Infection,Present,1,1,60,60,336,0.56,306,60,365,5000,2.5
-hs_constraints_absent,0.9,0.2,Infection,Absent,1,1,60,60,336,0.56,306,60,365,5000,2.5
-reduce_inf,0.9,0.2,Infection,Present,1,0.5,60,60,336,0.56,306,60,365,5000,2.5
+lower_Rt2,0.9,0.4,Combined,Present,1,1,60,60,336,0.56,306,60,365,5000,2.5
+higher_Rt2,0.9,0,Combined,Present,1,1,60,60,336,0.56,306,60,365,5000,2.5
+hs_constraints_absent,0.9,0.2,Combined,Absent,1,1,60,60,336,0.56,306,60,365,5000,2.5
+reduce_inf,0.9,0.2,Combined,Present,1,0.5,60,60,336,0.56,306,60,365,5000,2.5
