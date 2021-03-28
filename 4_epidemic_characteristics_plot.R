@@ -252,7 +252,7 @@ pd5 <- d5 %>%
   filter(efficacy == 90,
          coverage == 0.8,
          duration_R == 365,
-         mode == "Infection") %>%
+         mode == "Combined") %>%
   select(income_group, hs_constraints, deaths_averted_2021, years_life_saved_2021) %>%
   rename("Deaths averted" = "deaths_averted_2021", "Life-years gained" = "years_life_saved_2021") %>%
   pivot_longer(c("Deaths averted", "Life-years gained"))
@@ -264,6 +264,8 @@ g5
 g6
 
 pd5$value_per_1000 <- pd5$value/50e6*1e3
+
+write_csv(pd5, "averted_per_pop_summary.csv")
 
 ##################################################################################
 # combine plots

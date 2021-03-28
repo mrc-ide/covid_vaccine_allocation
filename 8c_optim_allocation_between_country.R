@@ -21,7 +21,7 @@ cov <- 0.8
 # Select immunosenescence
 imm <- 1
 # Select mode
-m <- "Infection"
+m <- "Combined"
 # hs constraints
 hs_con <- "Present"
 # immunity

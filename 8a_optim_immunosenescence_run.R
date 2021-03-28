@@ -37,7 +37,7 @@ immunosenescence <- 0.5
 # Vaccine coverage
 coverage <- 0.8
 # Vaccine mode of action
-mode <- "Infection"
+mode <- "Combined"
 # Health system constraints
 hs_constraints <- "Present"
 # Efficacy

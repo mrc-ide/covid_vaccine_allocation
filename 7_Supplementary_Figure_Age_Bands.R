@@ -27,17 +27,27 @@ y <- seq(4,84,5)
 z <- paste0(x,"-",y)
 z[17] <- "80+"
 
-g1 <- ggplot(pd, aes(x = strategy, y = `Age group`, fill = factor(Target))) + 
+pd1 <- filter(pd, Target == 1)
+
+g1 <- ggplot(pd1, aes(x = strategy, y = `Age group`, fill = factor(Target))) + 
   geom_tile() +
   facet_wrap(~ row, scales = "free", ncol = 1) + 
-  scale_fill_manual(values = c("white", "darkgrey"), labels = c("No vaccine", "Vaccine"), name = "") +
+  #scale_x_continuous("strategy") +
+  scale_fill_manual(values = c("darkgrey"), labels = c("Vaccinated"), name = "") +
   scale_y_continuous(breaks = 1:17, labels = z) +
+  scale_x_continuous( expand = c(0, 0))+
   theme_bw() +
   theme(axis.text.x = element_blank(),
         axis.ticks.x = element_blank(), 
         strip.background = element_blank(),
-        strip.text.x = element_blank()) +
+        strip.text.x = element_blank(),
+        panel.grid.major = element_line(colour = "grey", size = 0.5),
+        panel.border = element_blank(),
+        axis.line = element_line(),
+        legend.position="bottom") +
   labs(x = "Strategy")
 
-ggsave("plots/age_band_example.png", g1, height = 8, width = 7.5)
+g1
+
+ggsave("plots/FigS4.png", g1, height = 9.5, width = 7.5)
 

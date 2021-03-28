@@ -1,6 +1,7 @@
 #################################################################
 # 90% vaccine efficacy, 80% coverage, 4 income settings
 # show life years saved and deaths averted as bar chart -  for two levels of Rt2
+# Fig S20
 
 ### Load packages ###############################################################
 library(dplyr)
@@ -36,7 +37,7 @@ d1 <- readRDS("output/5_compare_Rt2.rds") %>%
          Rt2 = (1-reduction2)*R0) %>%
   filter(coverage == 0.8,
          duration_R == 365,
-         mode == "Infection") %>%
+         mode == "Combined") %>%
   select(income_group, hs_constraints, efficacy, Rt1, Rt2, deaths_averted_2021, years_life_saved_2021) %>%
   rename("Deaths averted" = "deaths_averted_2021", "Life-years gained" = "years_life_saved_2021") %>%
   pivot_longer(c("Deaths averted", "Life-years gained"))
@@ -55,4 +56,4 @@ all_plots <- (g1 | g2 | g3 | g4 | g5 | g6) + plot_layout(guide = "collect", ncol
 
 all_plots
 
-ggsave("plots/FigS19.png", all_plots, height = 8, width = 7.5)
+ggsave("plots/FigS20.png", all_plots, height = 8, width = 7.5)

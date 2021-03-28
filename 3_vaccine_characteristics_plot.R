@@ -17,7 +17,7 @@ cols <- RColorBrewer::brewer.pal(12, "Paired")[c(2, 4, 6, 10)]
 d <- readRDS("output/3_vacc_characteristics.rds") %>%
   mutate(efficacy = factor(efficacy*100),
          income_group = factor(income_group, levels = c("LIC","LMIC", "UMIC", "HIC")),
-         mode = factor(mode, levels = c("Infection", "Disease")),
+         mode = factor(mode, levels = c("Combined", "Infection", "Disease")),
          vaccine_start = vaccine_start + t_start,
          Rt1 = (1-reduction1)*R0,
          Rt2 = (1-reduction2)*R0)
@@ -29,11 +29,10 @@ efficacy <- seq(0.5, 1, 0.001)
 pd1 <- expand_grid(efficacy = efficacy, R = R) %>%
   mutate(threshold = (1 - (1 / R)) * (1 / efficacy)) %>%
   filter(threshold <= 1) %>%
-  #mutate(label = if_else(R == 2, "Rt2 = 2", "R0 = 2.5"))
-  mutate(label = paste0("R[t]==", R))
+  mutate(label = paste0("R[0]==", R))
 
 p1 <- ggplot(pd1, aes(x = efficacy * 100, y = threshold * 100, col = label)) +
-  geom_line() +
+  geom_line(size = 0.8) +
   ylim(50, 100) +
   ylab("Theoretical coverage for herd immunity (%)") +
   xlab("Efficacy (%)") +
@@ -51,12 +50,16 @@ p1
 pd2 <- d %>%
   filter(income_group == "HIC",
          duration_R == 365,
+         efficacy %in% c(50, 70, 90),
          hs_constraints == "Present")
 
+
+LINES <- c("Combined" = "solid", "Infection" = "dashed", "Disease" = "dotted")
+
 p2 <- ggplot(pd2, aes(x = coverage * 100, y = deaths_averted_2021 / 50e6 * 1e3, col = efficacy, lty = mode)) + 
-  geom_line() +
+  geom_line(size = 0.8) +
   scale_colour_viridis_d("Efficacy (%)", end = 0.8, direction = -1) +
-  scale_linetype("Mode") +
+  scale_linetype_manual("Mode", values = LINES) +
   xlab("Coverage (%)") +
   ylab("Deaths averted per thousand") +
   theme_bw() +
@@ -65,6 +68,8 @@ p2 <- ggplot(pd2, aes(x = coverage * 100, y = deaths_averted_2021 / 50e6 * 1e3, 
         panel.border = element_blank(),
         axis.line = element_line(),
         legend.text.align = 0)
+
+p2
 
 # Combine subplots
 cov_efficacy_plot <- (p1 | p2) + plot_annotation(tag_levels = 'A')
@@ -83,14 +88,15 @@ prop_averted <- pd2 %>%
 
 # Coverage and efficacy
 pd3 <- d %>%
-  filter(duration_R == 365)
+  filter(duration_R == 365,
+         efficacy %in% c(50, 70, 90))
 pd3[which(pd3$hs_constraints == "Absent"),]$hs_constraints <- "HS Constraints: Absent"
 pd3[which(pd3$hs_constraints == "Present"),]$hs_constraints <- "HS Constraints: Present"
 
 p3 <- ggplot(pd3, aes(x = coverage * 100, y = deaths_averted_2021 / 50e6 * 1e3, col = efficacy, lty = mode)) + 
-  geom_line() +
+  geom_line(size = 0.8) +
   scale_colour_viridis_d("Efficacy (%)", end = 0.8, direction = -1) +
-  scale_linetype("Mode") +
+  scale_linetype_manual("Mode", values = LINES) +
   xlab("Coverage (%)") +
   ylab("Deaths averted per thousand") +
   theme_bw() +

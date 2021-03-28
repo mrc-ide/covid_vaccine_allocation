@@ -28,7 +28,7 @@ timing2 <- 366 - t_start + vaccine_period + 21
 # Immunosenescence (efficacy in 65+ relative to efficacy)
 immunosenescence <- 1
 # Vaccine mode of action
-mode <- "Infection"
+mode <- "Combined"
 # Health system constraints
 hs_constraints <- "Present"
 # Efficacy

@@ -23,7 +23,7 @@ reduction2 <- 1-Rt2/R0
 timing1 <- 120 - t_start
 timing2 <- 366 - t_start + vaccine_period + 21
 # Vaccine mode of action
-mode <- "Infection"
+mode <- "Combined"
 # Age targeting
 age_target <- "1_1_1_1_1_1_1_1_1_1_1_1_1_1_1_1_1"
 # Income group

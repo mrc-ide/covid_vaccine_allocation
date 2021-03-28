@@ -21,7 +21,7 @@ strategies <- read_csv("data/non_optim_scenarios_cov1.csv", col_types = "ccccddd
 # Select immunosenescence
 imm <- 1
 # Select mode
-m <- "Infection"
+m <- "Combined"
 # hs constraints
 hs_con <- "Present"
 # immunity

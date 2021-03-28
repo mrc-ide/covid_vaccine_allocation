@@ -26,7 +26,7 @@ df1 <- read_csv(paste0("optim_dataframes/fig_4_inputs_", sr, ".csv"))
 
 if (sr == "reduce_efficacy"){sensitivity_run_text = "Vaccine efficacy 70%"}
 if (sr == "immunosenescence"){sensitivity_run_text = "Immunosenescence"}
-if (sr == "mode_disease"){sensitivity_run_text = "Disease-blocking vaccine"}
+if (sr == "mode_disease"){sensitivity_run_text = "Vaccine efficacious against disease only"}
 if (sr == "lower_Rt2"){sensitivity_run_text = "Higher level of continued NPIs"}
 if (sr == "hs_constraints_absent"){sensitivity_run_text = "Health system constraints absent"}
 if (sr == "reduce_inf"){sensitivity_run_text = "Reduced infectiousness < 10 years"}
