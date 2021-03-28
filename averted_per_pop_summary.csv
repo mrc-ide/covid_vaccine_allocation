@@ -1,0 +1,17 @@
+income_group,hs_constraints,name,value,value_per_1000
+HIC,Present,Deaths averted,161737.57,3.2347514000000004
+HIC,Present,Life-years gained,2524001.17,50.4800234
+UMIC,Present,Deaths averted,107972.62,2.1594523999999997
+UMIC,Present,Life-years gained,1865138.76,37.3027752
+LMIC,Present,Deaths averted,124473.09999999999,2.489462
+LMIC,Present,Life-years gained,2999131.13,59.9826226
+LIC,Present,Deaths averted,135941.26,2.7188252000000004
+LIC,Present,Life-years gained,4026415.23,80.5283046
+HIC,Absent,Deaths averted,161737.57,3.2347514000000004
+HIC,Absent,Life-years gained,2524001.17,50.4800234
+UMIC,Absent,Deaths averted,107972.62,2.1594523999999997
+UMIC,Absent,Life-years gained,1865138.76,37.3027752
+LMIC,Absent,Deaths averted,78118.48,1.5623695999999998
+LMIC,Absent,Life-years gained,1525617.26,30.5123452
+LIC,Absent,Deaths averted,56722.5,1.13445
+LIC,Absent,Life-years gained,1321046.52,26.4209304

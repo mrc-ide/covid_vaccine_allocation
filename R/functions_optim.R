@@ -21,7 +21,7 @@ create_params_list <-
            coverage = 0.8,
            income_group = c("HIC", "UMIC", "LMIC", "LIC"),
            immunosenescence = 1,
-           mode = "Infection",
+           mode = "Combined",
            hs_constraints = "Present",
            efficacy = 0.9,
            duration_R = 365,
