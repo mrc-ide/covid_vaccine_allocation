@@ -45,7 +45,7 @@ write_csv(scenarios, "output_sensitivity/scenarios.csv")
 #### Run the model #####################################################
 
 # Complete the runs in batches
-sr <- "lower_Rt2"
+sr <- "higher_Rt2"
 
 scenarios_sub <- filter(scenarios, sensitivity_run == sr)
 plan(multiprocess, workers = 6)
