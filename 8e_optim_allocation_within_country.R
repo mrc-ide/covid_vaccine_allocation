@@ -15,7 +15,7 @@ source("R/functions_optim.R")
 ### Load outputs ###############################################################
 d_out_all <- read_csv("optim_dataframes/optim_dataframe_income_fine.csv") %>%
   mutate(pop_age_target = round(pop_2019 * proportion / 100),
-         vaccine_n_2021 = round(coverage * pop_age_target),
+         #vaccine_n_2021 = round(coverage * pop_age_target),
          income_group = factor(income_group, levels = c("HIC","UMIC", "LMIC", "LIC")),
          relative_constraint = vaccine_n_2021 / pop_2019 * 100) %>%
   # Create columns for the front function to use
@@ -29,6 +29,7 @@ d_out_all <- read_csv("optim_dataframes/optim_dataframe_income_fine.csv") %>%
 sub_HIC <- filter(d_out_all, income_group == "HIC")
 threshold_HIC <- sub_HIC[which(sub_HIC$deaths_averted_2021 == max(sub_HIC$deaths_averted_2021)),]$relative_constraint
 
+# apply filter to capture supply up to 80% for plotting
 d_out_HIC <- rbind(
   front(sub_HIC),
   filter(sub_HIC, relative_constraint >= threshold_HIC, deaths_averted_2021 >= 0.9999 * max(sub_HIC$deaths_averted_2021)))
@@ -36,6 +37,7 @@ d_out_HIC <- rbind(
 sub_UMIC <- filter(d_out_all, income_group == "UMIC")
 threshold_UMIC <- sub_UMIC[which(sub_UMIC$deaths_averted_2021 == max(sub_UMIC$deaths_averted_2021)),]$relative_constraint
 
+# apply filter to capture supply up to 80% for plotting
 d_out_UMIC <- rbind(
   front(sub_UMIC),
   filter(sub_UMIC, relative_constraint >= threshold_UMIC, deaths_averted_2021 >= 0.9999 * max(sub_UMIC$deaths_averted_2021)))
@@ -43,6 +45,7 @@ d_out_UMIC <- rbind(
 sub_LMIC <- filter(d_out_all, income_group == "LMIC")
 threshold_LMIC <- sub_LMIC[which(sub_LMIC$deaths_averted_2021 == max(sub_LMIC$deaths_averted_2021)),]$relative_constraint
 
+# apply filter to capture supply up to 80% for plotting
 d_out_LMIC <- rbind(
   front(sub_LMIC),
   filter(sub_LMIC, relative_constraint >= threshold_LMIC, deaths_averted_2021 >= 0.9999 * max(sub_LMIC$deaths_averted_2021)))
@@ -52,7 +55,7 @@ threshold_LIC <- sub_LIC[which(sub_LIC$deaths_averted_2021 == max(sub_LIC$deaths
 
 d_out_LIC <- rbind(
   front(sub_LIC),
-  filter(sub_LIC, relative_constraint >= threshold_LIC, deaths_averted_2021 >= 0.9999 * max(sub_LIC$deaths_averted_2021)))
+  filter(sub_LIC, relative_constraint >= threshold_LIC, deaths_averted_2021 >= 0.99985 * max(sub_LIC$deaths_averted_2021)))
 
 d_out <- rbind(d_out_HIC, d_out_UMIC, d_out_LMIC, d_out_LIC)
 
